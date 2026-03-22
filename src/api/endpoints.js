@@ -1,0 +1,66 @@
+export const ENDPOINTS = {
+    AUTH: {
+        LOGIN: '/auth/login',
+        REGISTER: '/auth/register',
+        LOGOUT: '/auth/logout',
+        REFRESH: '/auth/refresh',
+        ME: '/auth/me',
+    },
+    USERS: {
+        LIST: '/users',
+        DETAIL: (id) => `/users/${id}`,
+        CREATE: '/users',
+        UPDATE: (id) => `/users/${id}`,
+        DELETE: (id) => `/users/${id}`,
+    },
+    PRODUCTS: {
+        LIST: '/products',
+        DETAIL: (id) => `/products/${id}`,
+        CREATE: '/products',
+        UPDATE: (id) => `/products/${id}`,
+        DELETE: (id) => `/products/${id}`,
+        BULK_DELETE: '/products/bulk-delete',
+        BULK_STATUS: '/products/bulk-status',
+        APPROVE: (id) => `/products/${id}/approve`,
+        REJECT: (id) => `/products/${id}/reject`,
+    },
+    CATEGORIES: {
+        LIST: '/categories',
+        DETAIL: (id) => `/categories/${id}`,
+        CREATE: '/categories',
+        UPDATE: (id) => `/categories/${id}`,
+        DELETE: (id) => `/categories/${id}`,
+    },
+    ORDERS: {
+        LIST: '/orders',
+        DETAIL: (id) => `/orders/${id}`,
+        UPDATE_STATUS: (id) => `/orders/${id}/status`,
+        BULK_STATUS: '/orders/bulk-status',
+        CANCEL: (id) => `/orders/${id}/cancel`,
+    },
+    SHOPS: {
+        LIST: '/shops',
+        DETAIL: (id) => `/shops/${id}`,
+        CREATE: '/shops',
+        UPDATE: (id) => `/shops/${id}`,
+        DELETE: (id) => `/shops/${id}`,
+        APPROVE: (id) => `/shops/${id}/approve`,
+        REJECT: (id) => `/shops/${id}/reject`,
+        SUSPEND: (id) => `/shops/${id}/suspend`,
+        REACTIVATE: (id) => `/shops/${id}/reactivate`,
+        REVENUE: (id) => `/shops/${id}/revenue`,
+        STATS: '/shops/stats',
+    },
+    UPLOAD: {
+        IMAGE: '/upload/image',
+    },
+    STATS: {
+        DASHBOARD: '/stats/dashboard',
+        REVENUE: '/stats/revenue',
+    },
+    SETTINGS: {
+        BANNERS: '/settings/banners',
+        BANNER_DETAIL: (id) => `/settings/banners/${id}`,
+        BANNER_REORDER: '/settings/banners/reorder',
+    }
+}

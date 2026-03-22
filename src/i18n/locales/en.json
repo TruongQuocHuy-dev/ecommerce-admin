@@ -1,0 +1,195 @@
+{
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "view": "View",
+        "search": "Search",
+        "filter": "Filter",
+        "actions": "Actions",
+        "add": "Add",
+        "export": "Export",
+        "import": "Import",
+        "next": "Next",
+        "previous": "Previous",
+        "submit": "Submit",
+        "close": "Close",
+        "confirm": "Confirm",
+        "loading": "Loading...",
+        "noData": "No data",
+        "error": "Error",
+        "success": "Success",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address",
+        "status": "Status",
+        "createdAt": "Created At",
+        "updatedAt": "Updated At",
+        "description": "Description",
+        "image": "Image",
+        "price": "Price",
+        "quantity": "Quantity",
+        "total": "Total",
+        "date": "Date",
+        "role": "Role"
+    },
+    "sidebar": {
+        "dashboard": "Dashboard",
+        "users": "Users",
+        "products": "Products",
+        "categories": "Categories",
+        "orders": "Orders",
+        "sellers": "Sellers",
+        "reviews": "Reviews",
+        "coupons": "Coupons",
+        "reports": "Reports",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "header": {
+        "searchPlaceholder": "Search anything...",
+        "notifications": "Notifications",
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Logout"
+    },
+    "dashboard": {
+        "title": "Dashboard Overview",
+        "welcome": "Welcome back, {{name}}",
+        "subtitle": "Here's what's happening today.",
+        "totalRevenue": "Total Revenue",
+        "totalOrders": "Total Orders",
+        "totalUsers": "Total Users",
+        "totalProducts": "Total Products",
+        "pendingOrders": "Pending Orders",
+        "canceledOrders": "Canceled / Returned",
+        "requiresAttention": "Requires attention",
+        "newThisMonth": "new this month",
+        "vsLastMonth": "vs last month",
+        "revenueAnalytics": "Revenue Analytics",
+        "ordersOverview": "Orders Overview"
+    },
+    "users": {
+        "title": "User Management",
+        "subtitle": "Manage system users, roles, and permissions.",
+        "addUser": "Add User",
+        "searchPlaceholder": "Search users by name or email...",
+        "allRoles": "All Roles",
+        "tableHeaders": {
+            "user": "User",
+            "role": "Role",
+            "status": "Status",
+            "joined": "Joined",
+            "actions": "Actions"
+        },
+        "roles": {
+            "admin": "Admin",
+            "super_admin": "Super Admin",
+            "seller": "Seller",
+            "user": "User"
+        },
+        "status": {
+            "active": "Active",
+            "inactive": "Inactive",
+            "blocked": "Blocked"
+        },
+        "noUsers": "No users found matching your search.",
+        "deleteConfirm": "Are you sure you want to delete this user?",
+        "editUser": "Edit User",
+        "viewUser": "View User"
+    },
+    "products": {
+        "title": "Products",
+        "subtitle": "Manage your catalog, prices, and stock.",
+        "addProduct": "Add Product",
+        "searchPlaceholder": "Search products...",
+        "allCategories": "All Categories",
+        "tableHeaders": {
+            "product": "Product",
+            "category": "Category",
+            "price": "Price",
+            "stock": "Stock",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "inStock": "In Stock",
+        "outOfStock": "Out of Stock",
+        "lowStock": "Low Stock",
+        "noProducts": "No products found.",
+        "deleteConfirm": "Are you sure you want to delete this product?",
+        "bulkDelete": "Delete Selected"
+    },
+    "categories": {
+        "title": "Categories",
+        "addCategory": "Add Category",
+        "noCategories": "No categories found",
+        "deleteConfirm": "Delete this category?",
+        "parent": "Parent"
+    },
+    "orders": {
+        "title": "Orders",
+        "subtitle": "Manage and track customer orders.",
+        "searchPlaceholder": "Search orders...",
+        "allStatus": "All Status",
+        "tableHeaders": {
+            "orderId": "Order ID",
+            "customer": "Customer",
+            "total": "Total",
+            "status": "Status",
+            "date": "Date",
+            "actions": "Actions"
+        },
+        "status": {
+            "pending": "Pending",
+            "processing": "Processing",
+            "shipped": "Shipped",
+            "delivered": "Delivered",
+            "cancelled": "Cancelled"
+        },
+        "noOrders": "No orders found.",
+        "viewDetails": "View Details",
+        "updateStatus": "Update Status",
+        "bulkUpdate": "Bulk Update"
+    },
+    "login": {
+        "title": "Sign In",
+        "subtitle": "Sign in to your admin account",
+        "email": "Email",
+        "password": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "loginButton": "Sign In",
+        "loggingIn": "Signing in...",
+        "emailPlaceholder": "admin@example.com",
+        "passwordPlaceholder": "Enter your password"
+    },
+    "modal": {
+        "editUser": "Edit User",
+        "addUser": "Add New User",
+        "editProduct": "Edit Product",
+        "addProduct": "Add New Product",
+        "editCategory": "Edit Category",
+        "addCategory": "Add New Category"
+    },
+    "toast": {
+        "userUpdated": "User updated successfully",
+        "userDeleted": "User deleted successfully",
+        "productUpdated": "Product updated successfully",
+        "productDeleted": "Product deleted successfully",
+        "categoryUpdated": "Category updated successfully",
+        "categoryDeleted": "Category deleted successfully",
+        "orderUpdated": "Order updated successfully",
+        "error": "An error occurred",
+        "loginSuccess": "Login successful",
+        "loginError": "Invalid email or password"
+    },
+    "discounts": {
+        "types": {
+            "fixed": "Fixed Amount",
+            "percentage": "Percentage %",
+            "freeship": "Free Shipping"
+        }
+    }
+}

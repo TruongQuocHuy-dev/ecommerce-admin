@@ -1,0 +1,270 @@
+{
+    "common": {
+        "save": "Lưu",
+        "cancel": "Hủy",
+        "delete": "Xóa",
+        "edit": "Sửa",
+        "view": "Xem",
+        "search": "Tìm kiếm",
+        "filter": "Lọc",
+        "actions": "Thao tác",
+        "add": "Thêm",
+        "export": "Xuất",
+        "import": "Nhập",
+        "next": "Tiếp",
+        "previous": "Trước",
+        "submit": "Gửi",
+        "close": "Đóng",
+        "confirm": "Xác nhận",
+        "loading": "Đang tải...",
+        "noData": "Không có dữ liệu",
+        "error": "Lỗi",
+        "success": "Thành công",
+        "name": "Tên",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "address": "Địa chỉ",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "description": "Mô tả",
+        "image": "Hình ảnh",
+        "price": "Giá",
+        "quantity": "Số lượng",
+        "total": "Tổng",
+        "date": "Ngày",
+        "role": "Vai trò",
+        "page": "Trang"
+    },
+    "reports": {
+        "overview": "Tổng quan",
+        "revenue": "Doanh thu",
+        "revenueOverTime": "Biểu đồ doanh thu",
+        "orderStatus": "Trạng thái đơn hàng",
+        "topProducts": "Sản phẩm bán chạy",
+        "subtitle": "Tổng quan về hiệu quả kinh doanh của cửa hàng",
+        "last7days": "7 ngày qua",
+        "last30days": "30 ngày qua",
+        "thisMonth": "Tháng này"
+    },
+    "settings": {
+        "title": "Cài đặt hệ thống",
+        "subtitle": "Quản lý cấu hình chung, phí vận chuyển và banner quảng cáo",
+        "general": "Cài đặt chung",
+        "shipping": "Vận chuyển",
+        "banners": "Banner",
+        "security": "Bảo mật",
+        "notifications": "Thông báo"
+    },
+    "sidebar": {
+        "dashboard": "Tổng quan",
+        "users": "Người dùng",
+        "products": "Sản phẩm",
+        "categories": "Danh mục",
+        "orders": "Đơn hàng",
+        "sellers": "Người bán",
+        "reviews": "Đánh giá",
+        "coupons": "Mã giảm giá",
+        "reports": "Báo cáo",
+        "settings": "Cài đặt",
+        "logout": "Đăng xuất"
+    },
+    "header": {
+        "searchPlaceholder": "Tìm kiếm...",
+        "notifications": "Thông báo",
+        "profile": "Hồ sơ",
+        "settings": "Cài đặt",
+        "logout": "Đăng xuất"
+    },
+    "dashboard": {
+        "title": "Tổng quan",
+        "welcome": "Chào mừng trở lại, {{name}}",
+        "subtitle": "Đây là những gì đang diễn ra hôm nay.",
+        "totalRevenue": "Tổng doanh thu",
+        "totalOrders": "Tổng đơn hàng",
+        "totalUsers": "Tổng người dùng",
+        "totalProducts": "Tổng sản phẩm",
+        "pendingOrders": "Đơn hàng chờ",
+        "canceledOrders": "Đơn hủy / Trả hàng",
+        "requiresAttention": "Cần xử lý",
+        "newThisMonth": "mới trong tháng",
+        "vsLastMonth": "so với tháng trước",
+        "revenueAnalytics": "Phân tích doanh thu",
+        "ordersOverview": "Tổng quan đơn hàng"
+    },
+    "users": {
+        "title": "Quản lý người dùng",
+        "subtitle": "Quản lý người dùng hệ thống, vai trò và quyền hạn.",
+        "addUser": "Thêm người dùng",
+        "searchPlaceholder": "Tìm kiếm theo tên hoặc email...",
+        "allRoles": "Tất cả vai trò",
+        "tableHeaders": {
+            "user": "Người dùng",
+            "role": "Vai trò",
+            "status": "Trạng thái",
+            "joined": "Ngày tham gia",
+            "actions": "Thao tác"
+        },
+        "roles": {
+            "admin": "Quản trị viên",
+            "super_admin": "Quản trị viên cao cấp",
+            "seller": "Người bán",
+            "user": "Người dùng"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "blocked": "Bị chặn"
+        },
+        "noUsers": "Không tìm thấy người dùng phù hợp.",
+        "deleteConfirm": "Bạn có chắc chắn muốn xóa người dùng này?",
+        "editUser": "Sửa người dùng",
+        "viewUser": "Xem người dùng"
+    },
+    "products": {
+        "title": "Sản phẩm",
+        "subtitle": "Quản lý danh mục, giá cả và tồn kho.",
+        "addProduct": "Thêm sản phẩm",
+        "searchPlaceholder": "Tìm sản phẩm...",
+        "allCategories": "Tất cả danh mục",
+        "tableHeaders": {
+            "product": "Sản phẩm",
+            "category": "Danh mục",
+            "price": "Giá",
+            "stock": "Tồn kho",
+            "status": "Trạng thái",
+            "actions": "Thao tác"
+        },
+        "inStock": "Còn hàng",
+        "outOfStock": "Hết hàng",
+        "lowStock": "Sắp hết",
+        "noProducts": "Không tìm thấy sản phẩm.",
+        "deleteConfirm": "Bạn có chắc chắn muốn xóa sản phẩm này?",
+        "bulkDelete": "Xóa đã chọn"
+    },
+    "categories": {
+        "title": "Danh mục",
+        "addCategory": "Thêm danh mục",
+        "noCategories": "Không tìm thấy danh mục",
+        "deleteConfirm": "Xóa danh mục này?",
+        "parent": "Danh mục cha"
+    },
+    "orders": {
+        "title": "Đơn hàng",
+        "subtitle": "Quản lý và theo dõi đơn hàng của khách hàng.",
+        "searchPlaceholder": "Tìm đơn hàng...",
+        "allStatus": "Tất cả trạng thái",
+        "tableHeaders": {
+            "orderId": "Mã đơn",
+            "customer": "Khách hàng",
+            "total": "Tổng tiền",
+            "status": "Trạng thái",
+            "date": "Ngày đặt",
+            "actions": "Thao tác"
+        },
+        "status": {
+            "pending": "Chờ xử lý",
+            "processing": "Đang xử lý",
+            "shipped": "Đã gửi",
+            "delivered": "Đã giao",
+            "cancelled": "Đã hủy"
+        },
+        "noOrders": "Không tìm thấy đơn hàng.",
+        "viewDetails": "Xem chi tiết",
+        "updateStatus": "Cập nhật trạng thái",
+        "bulkUpdate": "Cập nhật hàng loạt"
+    },
+    "login": {
+        "title": "Đăng nhập",
+        "subtitle": "Đăng nhập vào tài khoản quản trị",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "rememberMe": "Ghi nhớ đăng nhậpnhớ",
+        "forgotPassword": "Quên mật khẩu?",
+        "loginButton": "Đăng nhập",
+        "loggingIn": "Đang đăng nhập...",
+        "emailPlaceholder": "admin@example.com",
+        "passwordPlaceholder": "Nhập mật khẩu"
+    },
+    "modal": {
+        "editUser": "Sửa thông tin người dùng",
+        "addUser": "Thêm người dùng mới",
+        "editProduct": "Sửa sản phẩm",
+        "addProduct": "Thêm sản phẩm mới",
+        "editCategory": "Sửa danh mục",
+        "addCategory": "Thêm danh mục mới"
+    },
+    "toast": {
+        "userUpdated": "Cập nhật người dùng thành công",
+        "userDeleted": "Xóa người dùng thành công",
+        "productUpdated": "Cập nhật sản phẩm thành công",
+        "productDeleted": "Xóa sản phẩm thành công",
+        "categoryUpdated": "Cập nhật danh mục thành công",
+        "categoryDeleted": "Xóa danh mục thành công",
+        "orderUpdated": "Cập nhật đơn hàng thành công",
+        "error": "Đã có lỗi xảy ra",
+        "loginSuccess": "Đăng nhập thành công",
+        "loginError": "Email hoặc mật khẩu không đúng"
+    },
+    "discounts": {
+        "title": "Mã giảm giá",
+        "subtitle": "Quản lý mã khuyến mãi và chương trình giảm giá",
+        "addDiscount": "Tạo mã mới",
+        "searchPlaceholder": "Tìm mã...",
+        "allTypes": "Tất cả loại",
+        "allStatus": "Tất cả trạng thái",
+        "tableHeaders": {
+            "code": "Mã",
+            "name": "Tên",
+            "type": "Loại",
+            "value": "Giá trị",
+            "usage": "Lượt dùng",
+            "validUntil": "Hạn dùng",
+            "status": "Trạng thái",
+            "actions": "Thao tác"
+        },
+        "types": {
+            "fixed": "Giảm cố định",
+            "percentage": "Giảm theo %",
+            "freeship": "Miễn phí vận chuyển"
+        },
+        "status": {
+            "active": "Hoạt động",
+            "inactive": "Tạm ngừng",
+            "expired": "Hết hạn"
+        },
+        "modal": {
+            "add": "Tạo mã giảm giá",
+            "edit": "Sửa mã giảm giá",
+            "code": "Mã giảm giá",
+            "codePlaceholder": "VD: SAVE20",
+            "name": "Tên chương trình",
+            "description": "Mô tả",
+            "discountType": "Loại giảm giá",
+            "discountValue": "Giá trị giảm",
+            "minOrder": "Đơn tối thiểu",
+            "maxDiscount": "Giảm tối đa",
+            "usageLimit": "Giới hạn sử dụng",
+            "usagePerUser": "Giới hạn mỗi người",
+            "startDate": "Ngày bắt đầu",
+            "endDate": "Ngày kết thúc",
+            "active": "Kích hoạt"
+        },
+        "toast": {
+            "created": "Tạo mã thành công",
+            "updated": "Cập nhật mã thành công",
+            "deleted": "Xóa mã thành công",
+            "deactivated": "Đã vô hiệu hóa mã"
+        },
+        "confirmDelete": "Vô hiệu hóa mã giảm giá này?",
+        "noDiscounts": "Chưa có mã giảm giá"
+    },
+    "sellers": {
+        "title": "Người bán",
+        "subtitle": "Quản lý cửa hàng và người bán"
+    },
+    "language": {
+        "vietnamese": "Tiếng Việt",
+        "english": "English"
+    }
+}
