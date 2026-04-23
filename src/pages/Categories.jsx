@@ -167,8 +167,6 @@ const Categories = () => {
     const stats = useMemo(() => collectStats(categoryTree), [categoryTree])
 
     useEffect(() => {
-        document.title = 'Category Management | Shopee Clone Admin'
-
         let metaDescription = document.querySelector('meta[name="description"]')
         if (!metaDescription) {
             metaDescription = document.createElement('meta')
@@ -178,7 +176,7 @@ const Categories = () => {
 
         metaDescription.setAttribute(
             'content',
-            'Manage hierarchical product categories with parent-child structure, search, and pagination in admin dashboard.'
+            'Quản lý danh mục sản phẩm theo cây cha-con, có tìm kiếm và phân trang trong trang quản trị.'
         )
     }, [])
 
@@ -253,7 +251,7 @@ const Categories = () => {
 
 
     return (
-        <main className="space-y-6 animate-fade-in" aria-label="Category Management">
+        <main className="space-y-6 animate-fade-in">
             <header className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-slate-900">{t('categories.title')}</h1>
                 {canManageCategories && (
@@ -267,17 +265,13 @@ const Categories = () => {
                 )}
             </header>
 
-            <p className="text-sm text-slate-600">
-                Build and manage SEO-friendly category hierarchy with clear parent-child navigation for products.
-            </p>
-
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-4" aria-label="Category statistics">
                 <div className="bg-white rounded-xl border border-slate-200 p-4">
                     <p className="text-xs uppercase tracking-wider text-slate-500">Total Categories</p>
                     <p className="mt-2 text-3xl font-bold text-slate-900">{stats.total || 0}</p>
                 </div>
                 <div className="bg-white rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">Root Categories</p>
+                    <p className="text-xs uppercase tracking-wider text-slate-500">Danh mục gốc</p>
                     <p className="mt-2 text-3xl font-bold text-slate-900">{categoryTree.length || 0}</p>
                 </div>
                 <div className="bg-white rounded-xl border border-slate-200 p-4">
@@ -300,7 +294,7 @@ const Categories = () => {
                 </div>
                 <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <p className="text-sm text-slate-600">
-                        Showing root categories {totalRoots === 0 ? 0 : startRootIndex + 1}-{Math.min(endRootIndex, totalRoots)} of {totalRoots}
+                        Hiển thị danh mục gốc {totalRoots === 0 ? 0 : startRootIndex + 1}-{Math.min(endRootIndex, totalRoots)} trên tổng {totalRoots}
                     </p>
                     <div className="flex items-center gap-2">
                         <label htmlFor="page-size" className="text-sm text-slate-600">Rows per page</label>
@@ -383,10 +377,10 @@ const Categories = () => {
 
                                     <div>
                                         <p className="text-sm text-slate-700">
-                                            {category.parent?.name ? `Parent: ${category.parent.name}` : 'Root category'}
+                                            {category.parent?.name ? `Danh mục cha: ${category.parent.name}` : 'Danh mục gốc'}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            {hasChildren ? `${childrenCount} direct subcategories` : 'No subcategory'}
+                                            {hasChildren ? `${childrenCount} danh mục con trực tiếp` : 'Không có danh mục con'}
                                         </p>
                                     </div>
 

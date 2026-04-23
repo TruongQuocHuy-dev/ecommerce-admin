@@ -1,4 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -23,9 +25,47 @@ import NotFound from './components/ui/NotFound'
 import Forbidden from './components/ui/Forbidden'
 import { PERMISSIONS } from './utils/permissions'
 
+const APP_NAME = 'Shopee Clone Admin'
+
+const getPageTitle = (pathname) => {
+    if (pathname === '/login') return `Đăng nhập | ${APP_NAME}`
+    if (pathname === '/403') return `Không có quyền truy cập | ${APP_NAME}`
+    if (pathname === '/404') return `Không tìm thấy trang | ${APP_NAME}`
+
+    if (pathname === '/') return `Bảng điều khiển | ${APP_NAME}`
+    if (pathname === '/users') return `Quản lý người dùng | ${APP_NAME}`
+    if (pathname === '/products') return `Quản lý sản phẩm | ${APP_NAME}`
+    if (pathname === '/products/pending') return `Sản phẩm chờ duyệt | ${APP_NAME}`
+    if (pathname === '/products/stock') return `Quản lý tồn kho | ${APP_NAME}`
+    if (pathname === '/categories') return `Quản lý danh mục | ${APP_NAME}`
+    if (pathname === '/orders') return `Đơn hàng | ${APP_NAME}`
+    if (pathname === '/orders/create') return `Tạo đơn hàng thủ công | ${APP_NAME}`
+    if (pathname.startsWith('/orders/')) return `Chi tiết đơn hàng | ${APP_NAME}`
+    if (pathname === '/sellers') return `Quản lý người bán | ${APP_NAME}`
+    if (pathname === '/discounts') return `Quản lý khuyến mãi | ${APP_NAME}`
+    if (pathname === '/reviews') return `Đánh giá sản phẩm | ${APP_NAME}`
+    if (pathname === '/reports') return `Báo cáo | ${APP_NAME}`
+    if (pathname === '/settings') return `Cài đặt | ${APP_NAME}`
+    if (pathname === '/banners') return `Quản lý banner | ${APP_NAME}`
+    if (pathname === '/audit-logs') return `Nhật ký hệ thống | ${APP_NAME}`
+
+    return APP_NAME
+}
+
+const PageTitleManager = () => {
+    const { pathname } = useLocation()
+
+    useEffect(() => {
+        document.title = getPageTitle(pathname)
+    }, [pathname])
+
+    return null
+}
+
 function App() {
     return (
         <ErrorBoundary>
+            <PageTitleManager />
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/403" element={<Forbidden />} />
