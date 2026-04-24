@@ -19,7 +19,9 @@ import {
     Clock,
     TrendingUp,
     Plus,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Warehouse,
+    Building2
 } from 'lucide-react'
 import useAuthStore from '../../store/useAuthStore'
 import useUIStore from '../../store/useUIStore'
@@ -110,7 +112,9 @@ const Sidebar = () => {
             children: [
                 { path: '/products', label: 'Tất cả sản phẩm', icon: Box, exact: true },
                 { path: '/products/pending', label: 'Chờ duyệt', icon: Clock, permissions: ['admin'] },
+                { path: '/products/inventory', label: 'Quản lý kho', icon: Warehouse, permissions: ['admin'] },
                 { path: '/products/stock', label: 'Quản lý tồn kho', icon: TrendingUp },
+                { path: '/products/partners', label: 'Nhãn hiệu & Nhà cung cấp', icon: Building2, permissions: ['admin'] },
             ]
         },
         { path: '/categories', label: t('sidebar.categories'), icon: FolderTree, permissions: PERMISSIONS.VIEW_PRODUCTS },

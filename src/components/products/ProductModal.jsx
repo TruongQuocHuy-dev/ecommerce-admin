@@ -3,6 +3,8 @@ import { X, Upload, Package, Layers, Search, Save, Loader2 } from 'lucide-react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { useCategories } from '../../api/hooks/useCategories'
+import { useBrands } from '../../api/hooks/useBrands'
+import { useSuppliers } from '../../api/hooks/useSuppliers'
 import { useCreateProduct, useUpdateProduct } from '../../api/hooks/useProducts'
 import ProductVariants from './ProductVariants'
 import ProductSEO from './ProductSEO'
@@ -25,6 +27,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                 price: product.price || '',
                 stock: product.stock || '',
                 category: typeof product.category === 'object' ? (product.category?._id || product.category?.id) : product.category || '',
+                brand: typeof product.brand === 'object' ? (product.brand?._id || product.brand?.id) : product.brand || '',
+                supplier: typeof product.supplier === 'object' ? (product.supplier?._id || product.supplier?.id) : product.supplier || '',
                 metaTitle: product.metaTitle || '',
                 metaDescription: product.metaDescription || '',
                 metaKeywords: product.metaKeywords || '',
@@ -37,6 +41,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
             price: '',
             stock: '',
             category: '',
+            brand: '',
+            supplier: '',
             metaTitle: '',
             metaDescription: '',
             metaKeywords: '',
@@ -50,6 +56,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
     // Hooks
     const { data: categories = [] } = useCategories()
+    const { data: brands = [] } = useBrands()
+    const { data: suppliers = [] } = useSuppliers()
     const createProduct = useCreateProduct()
     const updateProduct = useUpdateProduct()
 
@@ -76,6 +84,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                 price: product.price || '',
                 stock: product.stock || '',
                 category: typeof product.category === 'object' ? (product.category?._id || product.category?.id) : product.category || '',
+                brand: typeof product.brand === 'object' ? (product.brand?._id || product.brand?.id) : product.brand || '',
+                supplier: typeof product.supplier === 'object' ? (product.supplier?._id || product.supplier?.id) : product.supplier || '',
                 metaTitle: product.metaTitle || '',
                 metaDescription: product.metaDescription || '',
                 metaKeywords: product.metaKeywords || '',
@@ -100,6 +110,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                 price: '',
                 stock: '',
                 category: '',
+                brand: '',
+                supplier: '',
                 metaTitle: '',
                 metaDescription: '',
                 metaKeywords: '',
@@ -154,6 +166,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
         data.append('price', formData.price)
         data.append('stock', formData.stock)
         data.append('category', formData.category)
+        if (formData.brand) data.append('brand', formData.brand)
+        if (formData.supplier) data.append('supplier', formData.supplier)
         data.append('isFeatured', formData.isFeatured)
 
         // SEO Fields
@@ -424,6 +438,42 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                         <label htmlFor="isFeatured" className="text-sm font-medium text-gray-700 cursor-pointer">
                                             Feature this product (shows on homepage)
                                         </label>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Brand
+                                        </label>
+                                        <select
+                                            value={formData.brand}
+                                            onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                        >
+                                            <option value="">Select a Brand</option>
+                                            {brands.map((brand) => (
+                                                <option key={brand._id || brand.id} value={brand._id || brand.id}>
+                                                    {brand.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Supplier
+                                        </label>
+                                        <select
+                                            value={formData.supplier}
+                                            onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                        >
+                                            <option value="">Select a Supplier</option>
+                                            {suppliers.map((supplier) => (
+                                                <option key={supplier._id || supplier.id} value={supplier._id || supplier.id}>
+                                                    {supplier.name}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
 
                                     <div className="col-span-2">

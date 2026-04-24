@@ -24,6 +24,24 @@ export const ENDPOINTS = {
         APPROVE: (id) => `/products/${id}/approve`,
         REJECT: (id) => `/products/${id}/reject`,
     },
+    BRANDS: {
+        LIST: '/brands',
+        CREATE: '/brands',
+        UPDATE: (id) => `/brands/${id}`,
+        DELETE: (id) => `/brands/${id}`,
+    },
+    SUPPLIERS: {
+        LIST: '/suppliers',
+        CREATE: '/suppliers',
+        UPDATE: (id) => `/suppliers/${id}`,
+        DELETE: (id) => `/suppliers/${id}`,
+    },
+    INVENTORY: {
+        OVERVIEW: '/inventory/overview',
+        WAREHOUSES: '/inventory/warehouses',
+        WAREHOUSE_DETAIL: (id) => `/inventory/warehouses/${id}`,
+        MOVEMENTS: '/inventory/movements',
+    },
     CATEGORIES: {
         LIST: '/categories',
         DETAIL: (id) => `/categories/${id}`,

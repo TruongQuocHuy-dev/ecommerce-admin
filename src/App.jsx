@@ -6,6 +6,8 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import Users from './pages/Users'
 import Products from './pages/Products'
+import InventoryManagement from './pages/InventoryManagement'
+import ProductPartners from './pages/ProductPartners'
 import Categories from './pages/Categories'
 import Orders from './pages/Orders'
 import ManualOrder from './pages/ManualOrder'
@@ -36,7 +38,9 @@ const getPageTitle = (pathname) => {
     if (pathname === '/users') return `Quản lý người dùng | ${APP_NAME}`
     if (pathname === '/products') return `Quản lý sản phẩm | ${APP_NAME}`
     if (pathname === '/products/pending') return `Sản phẩm chờ duyệt | ${APP_NAME}`
+    if (pathname === '/products/inventory') return `Quản lý kho hàng | ${APP_NAME}`
     if (pathname === '/products/stock') return `Quản lý tồn kho | ${APP_NAME}`
+    if (pathname === '/products/partners') return `Nhãn hiệu và nhà cung cấp | ${APP_NAME}`
     if (pathname === '/categories') return `Quản lý danh mục | ${APP_NAME}`
     if (pathname === '/orders') return `Đơn hàng | ${APP_NAME}`
     if (pathname === '/orders/create') return `Tạo đơn hàng thủ công | ${APP_NAME}`
@@ -95,6 +99,24 @@ function App() {
                         element={
                             <ProtectedRoute allowedRoles={PERMISSIONS.VIEW_PRODUCTS}>
                                 <Products />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="products/inventory"
+                        element={
+                            <ProtectedRoute allowedRoles={['admin']}>
+                                <InventoryManagement />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="products/partners"
+                        element={
+                            <ProtectedRoute allowedRoles={['admin']}>
+                                <ProductPartners />
                             </ProtectedRoute>
                         }
                     />

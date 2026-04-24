@@ -1,8 +1,10 @@
-import { useState } from 'react'
-import { Search, Plus, Edit, Trash2, Eye, Filter, CheckSquare, Square, CheckCircle, XCircle } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Search, Edit, Trash2, Eye, Filter, CheckSquare, Square, CheckCircle, XCircle, Package } from 'lucide-react'
 import { useProducts, useUpdateProduct, useDeleteProduct, useBulkDeleteProducts, useApproveProduct, useRejectProduct } from '../api/hooks/useProducts'
 import { useCategories } from '../api/hooks/useCategories'
 import ProductModal from '../components/products/ProductModal'
+import ProductCommandCenterHeader from '../components/products/ProductCommandCenterHeader'
+import ProductSummaryCards from '../components/products/ProductSummaryCards'
 import { PERMISSIONS, hasPermission } from '../utils/permissions'
 import { useTranslation } from '../i18n/index.jsx'
 import useAuthStore from '../store/useAuthStore'
@@ -33,6 +35,34 @@ const Products = () => {
 
     const products = data?.products || []
     const pagination = data?.pagination || {}
+
+    const summary = useMemo(() => {
+        const counts = products.reduce(
+            (acc, product) => {
+                const approvalStatus = product.approvalStatus || 'pending'
+                acc.total += 1
+                acc[approvalStatus] = (acc[approvalStatus] || 0) + 1
+                if (product.isActive) {
+                    acc.active += 1
+                } else {
+                    acc.inactive += 1
+                }
+                return acc
+            },
+            { total: 0, pending: 0, approved: 0, rejected: 0, active: 0, inactive: 0 }
+        )
+
+        return counts
+    }, [products])
+
+    const clearFilters = () => {
+        setSearch('')
+        setCategoryFilter('')
+        setApprovalFilter('')
+        setPage(1)
+    }
+
+    const hasActiveFilters = search || categoryFilter || approvalFilter
 
     // Helper to flatten hierarchical categories for the dropdown
     const flattenCategories = (cats, level = 0) => {
@@ -110,80 +140,97 @@ const Products = () => {
 
     return (
         <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">{t('products.title')}</h1>
-                    <p className="text-slate-600 mt-1">{t('products.subtitle')}</p>
-                </div>
-                {canManageProducts && (
-                    <button
-                        onClick={handleCreate}
-                        className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add Product
-                    </button>
-                )}
-            </div>
+            <ProductCommandCenterHeader
+                title={t('products.title')}
+                subtitle={t('products.subtitle')}
+                onCreate={handleCreate}
+                canCreate={canManageProducts}
+            />
 
-            {/* Filters & Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search products by name or SKU..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none"
-                    />
-                </div>
-                <div className="flex gap-2">
-                    <select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:border-primary-500 outline-none bg-white min-w-[150px]"
-                    >
-                        <option value="">Tất cả</option>
-                        {flatCategories.map(cat => (
-                            <option key={cat.id} value={cat.id}>
-                                {'\u00A0'.repeat(cat.level * 2)}{cat.name}
-                            </option>
-                        ))}
-                    </select>
+            <ProductSummaryCards summary={summary} />
 
-                    <select
-                        value={approvalFilter}
-                        onChange={(e) => setApprovalFilter(e.target.value)}
-                        className="px-4 py-2 border border-gray-300 rounded-lg focus:border-primary-500 outline-none bg-white min-w-[150px]"
-                    >
-                        <option value="">Trạng thái</option>
-                        <option value="pending">Chờ duyệt</option>
-                        <option value="approved">Đã duyệt</option>
-                        <option value="rejected">Đã từ chối</option>
-                    </select>
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                    <div className="relative flex-1">
+                        <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="Search by product name or SKU code..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            className="w-full rounded-2xl border border-slate-300 bg-slate-50 py-3 pl-10 pr-4 outline-none transition focus:border-cyan-500 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
+                        />
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 xl:w-auto xl:min-w-[540px]">
+                        <select
+                            value={categoryFilter}
+                            onChange={(e) => setCategoryFilter(e.target.value)}
+                            className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
+                        >
+                            <option value="">All categories</option>
+                            {flatCategories.map(cat => (
+                                <option key={cat.id} value={cat.id}>
+                                    {'\u00A0'.repeat(cat.level * 2)}{cat.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={approvalFilter}
+                            onChange={(e) => setApprovalFilter(e.target.value)}
+                            className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
+                        >
+                            <option value="">Approval status</option>
+                            <option value="pending">Chờ duyệt</option>
+                            <option value="approved">Đã duyệt</option>
+                            <option value="rejected">Đã từ chối</option>
+                        </select>
+
+                        <button
+                            type="button"
+                            onClick={clearFilters}
+                            disabled={!hasActiveFilters}
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            <Filter className="h-4 w-4" />
+                            Clear filters
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {/* Bulk Actions */}
             {selectedIds.length > 0 && canManageProducts && (
-                <div className="flex items-center gap-4 bg-primary-50 p-3 rounded-lg border border-primary-100 text-primary-700 animate-fade-in">
+                <div className="flex flex-col gap-3 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-cyan-800 shadow-sm md:flex-row md:items-center md:justify-between animate-fade-in">
                     <span className="text-sm font-medium">{selectedIds.length} items selected</span>
-                    <button
-                        onClick={handleBulkDelete}
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-red-200 text-red-600 rounded-md hover:bg-red-50 text-sm font-medium shadow-sm"
-                    >
-                        <Trash2 className="w-4 h-4" />
-                        Delete Selected
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={handleBulkDelete}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:bg-red-50"
+                        >
+                            <Trash2 className="w-4 h-4" />
+                            Delete Selected
+                        </button>
+                    </div>
                 </div>
             )}
 
             {/* Products Grid */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+                <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
+                    <div className="flex items-center justify-between gap-3">
+                        <div>
+                            <h2 className="text-lg font-semibold text-slate-900">Product roster</h2>
+                            <p className="text-sm text-slate-500">Use the table for status updates, moderation, and quick edits.</p>
+                        </div>
+                        <p className="text-sm text-slate-500">
+                            Showing page {page} of {pagination.totalPages || 1}
+                        </p>
+                    </div>
+                </div>
                 <div className="overflow-x-auto">
                     <table className="w-full">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-slate-50/80 border-b border-slate-200">
                             <tr>
                                 <th className="px-6 py-3 w-10">
                                     <button onClick={toggleSelectAll} className="flex items-center justify-center text-gray-400 hover:text-gray-600">
@@ -194,13 +241,13 @@ const Products = () => {
                                         )}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Product</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Category</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Price</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Stock</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Approval</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Active</th>
-                                <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Actions</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Product</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Category</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Price</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Stock</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Approval</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Active</th>
+                                <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -214,13 +261,33 @@ const Products = () => {
                                 </tr>
                             ) : products.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-12 text-center text-gray-500">No products found</td>
+                                    <td colSpan={8} className="px-6 py-14 text-center text-gray-500">
+                                        <div className="mx-auto flex max-w-md flex-col items-center gap-3">
+                                            <div className="rounded-2xl bg-slate-100 p-4 text-slate-400">
+                                                <Package className="h-8 w-8" />
+                                            </div>
+                                            <div>
+                                                <p className="text-base font-semibold text-slate-800">No products found</p>
+                                                <p className="mt-1 text-sm text-slate-500">Try changing filters or create a new product to get started.</p>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             ) : (
                                 products.map((product) => {
                                     const isSelected = selectedIds.includes(product.id || product._id)
+                                    const approvalTone = product.approvalStatus === 'approved'
+                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                        : product.approvalStatus === 'rejected'
+                                            ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                            : 'bg-amber-50 text-amber-700 border-amber-200'
+
+                                    const activeTone = product.isActive
+                                        ? 'bg-cyan-50 text-cyan-700 border-cyan-200'
+                                        : 'bg-slate-100 text-slate-600 border-slate-200'
+
                                     return (
-                                        <tr key={product.id || product._id} className={`hover:bg-gray-50 transition-colors ${isSelected ? 'bg-primary-50/30' : ''}`}>
+                                        <tr key={product.id || product._id} className={`transition-colors hover:bg-slate-50 ${isSelected ? 'bg-cyan-50/40' : ''}`}>
                                             <td className="px-6 py-4">
                                                 <button onClick={() => toggleSelect(product.id || product._id)} className="flex items-center justify-center text-gray-400 hover:text-gray-600">
                                                     {isSelected ? (
@@ -235,46 +302,48 @@ const Products = () => {
                                                     <img
                                                         src={product.images?.[0] || '/placeholder.png'}
                                                         alt={product.name}
-                                                        className="w-12 h-12 rounded-lg object-cover bg-gray-100 border border-gray-200"
+                                                        className="h-14 w-14 rounded-2xl object-cover bg-slate-100 border border-slate-200 shadow-sm"
                                                     />
                                                     <div>
-                                                        <p className="font-medium text-gray-900 line-clamp-1">{product.name}</p>
-                                                        <p className="text-sm text-gray-500">SKU: {(product.id || product._id)?.slice(-6)}</p>
+                                                        <p className="font-semibold text-slate-900 line-clamp-1">{product.name}</p>
+                                                        <p className="text-sm text-slate-500">SKU: {(product.id || product._id)?.slice(-6)}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 text-gray-600 text-sm">
-                                                {product.category?.name || <span className="text-gray-400 italic">No Category</span>}
+                                            <td className="px-6 py-4 text-sm text-slate-600">
+                                                {product.category?.name || <span className="italic text-slate-400">No Category</span>}
                                             </td>
-                                            <td className="px-6 py-4 text-gray-900 font-medium">
+                                            <td className="px-6 py-4 font-semibold text-slate-900">
                                                 ${product.price?.toFixed(2)}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <span className={`${product.stock > 10 ? 'text-green-600' : product.stock > 0 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                                <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${product.stock > 10 ? 'bg-emerald-50 text-emerald-700' : product.stock > 0 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}`}>
                                                     {product.totalStock || product.stock || 0}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <select
-                                                    value={product.approvalStatus || 'pending'}
-                                                    onChange={(e) => handleApprovalChange(product.id || product._id, e.target.value)}
-                                                    disabled={!canManageProducts}
-                                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border outline-none cursor-pointer ${product.approvalStatus === 'approved' ? 'bg-green-50 border-green-200 text-green-700' :
-                                                        product.approvalStatus === 'pending' ? 'bg-yellow-50 border-yellow-200 text-yellow-700' : 'bg-red-50 border-red-200 text-red-700'
-                                                        }`}
-                                                >
-                                                    <option value="pending">Pending</option>
-                                                    <option value="approved">Approved</option>
-                                                    <option value="rejected">Rejected</option>
-                                                </select>
+                                                <div className="flex flex-col gap-2">
+                                                    <select
+                                                        value={product.approvalStatus || 'pending'}
+                                                        onChange={(e) => handleApprovalChange(product.id || product._id, e.target.value)}
+                                                        disabled={!canManageProducts}
+                                                        className={`rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-wide outline-none transition ${approvalTone}`}
+                                                    >
+                                                        <option value="pending">Pending</option>
+                                                        <option value="approved">Approved</option>
+                                                        <option value="rejected">Rejected</option>
+                                                    </select>
+                                                    {product.approvalStatus === 'rejected' && (
+                                                        <p className="text-xs text-rose-600 line-clamp-1">Needs rework before republish</p>
+                                                    )}
+                                                </div>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <select
                                                     value={product.isActive ? 'true' : 'false'}
                                                     onChange={(e) => handleActiveChange(product.id || product._id, e.target.value === 'true')}
                                                     disabled={!canManageProducts}
-                                                    className={`px-2.5 py-1 rounded-lg text-xs font-medium border outline-none cursor-pointer ${product.isActive ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-700'
-                                                        }`}
+                                                    className={`rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-wide outline-none transition ${activeTone}`}
                                                 >
                                                     <option value="true">Active</option>
                                                     <option value="false">Inactive</option>
@@ -286,15 +355,15 @@ const Products = () => {
                                                         <>
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); handleEdit(product) }}
-                                                                className="p-2 hover:bg-gray-100 rounded-lg text-gray-500 text-blue-600 hover:bg-blue-50"
-                                                                title="Edit"
+                                                                className="rounded-xl p-2 text-blue-600 transition hover:bg-blue-50"
+                                                                title="Edit product"
                                                             >
                                                                 <Edit className="w-4 h-4" />
                                                             </button>
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); handleDelete(product.id || product._id) }}
-                                                                className="p-2 hover:bg-red-50 rounded-lg text-red-500"
-                                                                title="Delete"
+                                                                className="rounded-xl p-2 text-red-500 transition hover:bg-red-50"
+                                                                title="Delete product"
                                                             >
                                                                 <Trash2 className="w-4 h-4" />
                                                             </button>
@@ -313,22 +382,22 @@ const Products = () => {
 
             {/* Pagination */}
             {pagination.totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                    <p className="text-sm text-gray-600">
+                <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between">
+                    <p className="text-sm font-medium text-slate-600">
                         Showing page {page} of {pagination.totalPages}
                     </p>
                     <div className="flex gap-2">
                         <button
                             onClick={() => setPage(p => Math.max(1, p - 1))}
                             disabled={page === 1}
-                            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-sm font-medium"
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                         >
                             Previous
                         </button>
                         <button
                             onClick={() => setPage(p => p + 1)}
                             disabled={page >= pagination.totalPages}
-                            className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 text-sm font-medium"
+                            className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                         >
                             Next
                         </button>
