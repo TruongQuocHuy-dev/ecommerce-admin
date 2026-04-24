@@ -1,10 +1,20 @@
 export const ROLES = {
     SUPER_ADMIN: 'super_admin',
+    ADMIN: 'admin',
     PRODUCT_MANAGER: 'product_manager',
     ORDER_MANAGER: 'order_manager',
     SUPPORT: 'support',
     FINANCE: 'finance',
     USER: 'user'
+}
+
+const ROLE_ALIASES = {
+    admin: ROLES.SUPER_ADMIN,
+}
+
+export const normalizeRole = (role) => {
+    if (!role) return role
+    return ROLE_ALIASES[role] || role
 }
 
 export const PERMISSIONS = {
@@ -49,7 +59,10 @@ export const PERMISSIONS = {
  * @returns {boolean}
  */
 export const hasPermission = (userRole, allowedRoles) => {
-    if (!userRole) return false
-    if (userRole === ROLES.SUPER_ADMIN) return true
-    return allowedRoles.includes(userRole)
+    const normalizedUserRole = normalizeRole(userRole)
+    const normalizedAllowedRoles = allowedRoles.map(normalizeRole)
+
+    if (!normalizedUserRole) return false
+    if (normalizedUserRole === ROLES.SUPER_ADMIN) return true
+    return normalizedAllowedRoles.includes(normalizedUserRole)
 }

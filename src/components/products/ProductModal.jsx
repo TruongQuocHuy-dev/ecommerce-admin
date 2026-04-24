@@ -12,7 +12,9 @@ import { useTranslation } from '../../i18n/index.jsx'
 const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
     const { t } = useTranslation()
     const [activeTab, setActiveTab] = useState('general')
-    const [imageFiles, setImageFiles] = useState([])
+    const [existingImages, setExistingImages] = useState([])
+    const [newImageFiles, setNewImageFiles] = useState([])
+    const [newImagePreviews, setNewImagePreviews] = useState([])
 
     // Initialize state from product if editing
     const [formData, setFormData] = useState(() => {
@@ -42,9 +44,9 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
         }
     })
 
-    const [imagePreviews, setImagePreviews] = useState(() => (product && mode === 'edit' ? product.images || [] : []))
     const [tierVariations, setTierVariations] = useState(() => (product && mode === 'edit' ? product.tierVariations || [] : []))
     const [skus, setSkus] = useState(() => (product && mode === 'edit' ? product.skus || [] : []))
+    const [validationErrors, setValidationErrors] = useState({})
 
     // Hooks
     const { data: categories = [] } = useCategories()
@@ -67,6 +69,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
     useEffect(() => {
         if (product && mode === 'edit') {
+            setValidationErrors({})
             setFormData({
                 name: product.name || '',
                 description: product.description || '',
@@ -85,11 +88,12 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
             setTierVariations(product.tierVariations || [])
             setSkus(product.skus || [])
 
-            if (product.images && product.images.length > 0) {
-                setImagePreviews(product.images)
-            }
+            setExistingImages(product.images || [])
+            setNewImageFiles([])
+            setNewImagePreviews([])
         } else {
             // Reset form
+            setValidationErrors({})
             setFormData({
                 name: '',
                 description: '',
@@ -103,8 +107,9 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
             })
             setTierVariations([])
             setSkus([])
-            setImagePreviews([])
-            setImageFiles([])
+            setExistingImages([])
+            setNewImageFiles([])
+            setNewImagePreviews([])
             setActiveTab('general')
         }
     }, [product, mode, isOpen])
@@ -112,19 +117,35 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files)
         if (files.length > 0) {
-            setImageFiles(prev => [...prev, ...files])
-            const newPreviews = files.map(file => URL.createObjectURL(file))
-            setImagePreviews(prev => [...prev, ...newPreviews])
+            const currentImageCount = existingImages.length + newImageFiles.length
+            const remainingSlots = Math.max(0, 5 - currentImageCount)
+            const selectedFiles = files.slice(0, remainingSlots)
+
+            if (selectedFiles.length === 0) {
+                return
+            }
+
+            setNewImageFiles(prev => [...prev, ...selectedFiles])
+            const newPreviews = selectedFiles.map(file => URL.createObjectURL(file))
+            setNewImagePreviews(prev => [...prev, ...newPreviews])
+
+            // Reset file input to allow selecting the same file again after remove.
+            e.target.value = ''
         }
     }
 
-    const handleRemoveImage = (index) => {
-        setImagePreviews(prev => prev.filter((_, i) => i !== index))
-        setImageFiles(prev => prev.filter((_, i) => i !== index))
+    const handleRemoveExistingImage = (index) => {
+        setExistingImages(prev => prev.filter((_, i) => i !== index))
+    }
+
+    const handleRemoveNewImage = (index) => {
+        setNewImageFiles(prev => prev.filter((_, i) => i !== index))
+        setNewImagePreviews(prev => prev.filter((_, i) => i !== index))
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        setValidationErrors({})
 
         const data = new FormData()
         // Basic Fields
@@ -157,18 +178,52 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
             }
         });
 
-        imageFiles.forEach(file => {
+        const currentImageCount = existingImages.length + newImageFiles.length
+        if (currentImageCount === 0) {
+            setValidationErrors({ images: 'Product must have at least one image' })
+            return
+        }
+
+        const handleMutationError = (error) => {
+            const apiErrors = error?.response?.data?.errors
+            if (!Array.isArray(apiErrors)) {
+                return
+            }
+
+            const nextErrors = {}
+            apiErrors.forEach((item) => {
+                const field = item?.path
+                const message = item?.msg
+                if (field && message && !nextErrors[field]) {
+                    nextErrors[field] = message
+                }
+            })
+
+            if (Object.keys(nextErrors).length > 0) {
+                setValidationErrors(nextErrors)
+            }
+        }
+
+        if (mode === 'edit') {
+            const originalImages = product?.images || []
+            const removeExistingImages = originalImages.filter((img) => !existingImages.includes(img))
+            data.append('removeExistingImages', JSON.stringify(removeExistingImages))
+        }
+
+        newImageFiles.forEach(file => {
             data.append('images', file)
         })
 
         if (mode === 'create') {
             createProduct.mutate(data, {
-                onSuccess: () => onClose()
+                onSuccess: () => onClose(),
+                onError: handleMutationError,
             })
         } else {
             const id = product.id || product._id
             updateProduct.mutate({ id, data }, {
-                onSuccess: () => onClose()
+                onSuccess: () => onClose(),
+                onError: handleMutationError,
             })
         }
     }
@@ -254,10 +309,21 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                             type="text"
                                             required
                                             value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, name: e.target.value })
+                                                if (validationErrors.name) {
+                                                    setValidationErrors((prev) => ({ ...prev, name: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.name ? 'border-red-400' : 'border-gray-300'
+                                            )}
                                             placeholder="Enter product name"
                                         />
+                                        {validationErrors.name && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.name}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -270,10 +336,21 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                             min="0"
                                             step="0.01"
                                             value={formData.price}
-                                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, price: e.target.value })
+                                                if (validationErrors.price) {
+                                                    setValidationErrors((prev) => ({ ...prev, price: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.price ? 'border-red-400' : 'border-gray-300'
+                                            )}
                                             placeholder="0.00"
                                         />
+                                        {validationErrors.price && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.price}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -285,11 +362,22 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                             required
                                             min="0"
                                             value={formData.stock}
-                                            onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, stock: e.target.value })
+                                                if (validationErrors.stock) {
+                                                    setValidationErrors((prev) => ({ ...prev, stock: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.stock ? 'border-red-400' : 'border-gray-300'
+                                            )}
                                             placeholder="0"
                                             disabled={skus.length > 0} // Disable if variants exist
                                         />
+                                        {validationErrors.stock && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.stock}</p>
+                                        )}
                                         {skus.length > 0 && (
                                             <p className="text-xs text-orange-500 mt-1">Managed automatically by variants</p>
                                         )}
@@ -302,8 +390,16 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                         <select
                                             required
                                             value={formData.category}
-                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, category: e.target.value })
+                                                if (validationErrors.category) {
+                                                    setValidationErrors((prev) => ({ ...prev, category: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.category ? 'border-red-400' : 'border-gray-300'
+                                            )}
                                         >
                                             <option value="">Select a Category</option>
                                             {flatCategories.map((cat) => (
@@ -312,6 +408,9 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 </option>
                                             ))}
                                         </select>
+                                        {validationErrors.category && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.category}</p>
+                                        )}
                                     </div>
 
                                     <div className="col-span-2 flex items-center gap-3">
@@ -334,7 +433,12 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                         <ReactQuill
                                             theme="snow"
                                             value={formData.description}
-                                            onChange={(value) => setFormData({ ...formData, description: value })}
+                                            onChange={(value) => {
+                                                setFormData({ ...formData, description: value })
+                                                if (validationErrors.description) {
+                                                    setValidationErrors((prev) => ({ ...prev, description: undefined }))
+                                                }
+                                            }}
                                             className="rounded-lg overflow-hidden border-gray-300"
                                             modules={{
                                                 toolbar: [
@@ -345,6 +449,9 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 ],
                                             }}
                                         />
+                                        {validationErrors.description && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.description}</p>
+                                        )}
                                     </div>
 
                                     <div className="col-span-2">
@@ -352,12 +459,24 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                             Product Images
                                         </label>
                                         <div className="mb-4 flex flex-wrap gap-4">
-                                            {imagePreviews.map((src, index) => (
+                                            {existingImages.map((src, index) => (
                                                 <div key={index} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 group">
                                                     <img src={src} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
                                                     <button
                                                         type="button"
-                                                        onClick={() => handleRemoveImage(index)}
+                                                        onClick={() => handleRemoveExistingImage(index)}
+                                                        className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                                    >
+                                                        <X className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                            {newImagePreviews.map((src, index) => (
+                                                <div key={`new-${index}`} className="relative w-24 h-24 rounded-lg overflow-hidden border border-gray-200 group">
+                                                    <img src={src} alt={`New product ${index + 1}`} className="w-full h-full object-cover" />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveNewImage(index)}
                                                         className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                                     >
                                                         <X className="w-3 h-3" />
@@ -369,6 +488,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                     type="file"
                                                     multiple
                                                     accept="image/*"
+                                                    disabled={existingImages.length + newImageFiles.length >= 5}
                                                     onChange={handleImageChange}
                                                     className="absolute inset-0 opacity-0 cursor-pointer z-10"
                                                 />
@@ -381,6 +501,9 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                         <p className="text-xs text-gray-500">
                                             Upload up to 5 images. Supported formats: JPG, PNG, WEBP.
                                         </p>
+                                        {validationErrors.images && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.images}</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>

@@ -3,14 +3,15 @@ import api from '../client'
 import { ENDPOINTS } from '../endpoints'
 import toast from 'react-hot-toast'
 
-export const useProducts = (page = 1, limit = 10, search = '', category = '') => {
+export const useProducts = (page = 1, limit = 10, search = '', category = '', approvalStatus = '') => {
     return useQuery({
-        queryKey: ['products', page, limit, search, category],
+        queryKey: ['products', page, limit, search, category, approvalStatus],
         queryFn: async () => {
             try {
                 const params = new URLSearchParams({ page, limit })
                 if (search) params.append('search', search)
                 if (category) params.append('category', category)
+                if (approvalStatus) params.append('approvalStatus', approvalStatus)
 
                 const response = await api.get(`${ENDPOINTS.PRODUCTS.LIST}?${params}`)
                 return response.data?.data || { products: [], pagination: {} }

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { Store, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useTranslation } from '../i18n/index.jsx';
 import FloatingLabelInput from '../components/ui/FloatingLabelInput';
+import { normalizeRole } from '../utils/permissions';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -32,7 +33,7 @@ const Login = () => {
             const { user, tokens } = response.data.data;
 
             // Map backend role to frontend permissions
-            const role = user.role === 'admin' ? 'super_admin' : user.role;
+            const role = normalizeRole(user.role);
             const userWithMappedRole = { ...user, role };
 
             login(userWithMappedRole, tokens.accessToken, []);

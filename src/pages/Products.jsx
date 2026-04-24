@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, Plus, Edit, Trash2, Eye, Filter, CheckSquare, Square, Archive, CheckCircle, XCircle } from 'lucide-react'
+import { Search, Plus, Edit, Trash2, Eye, Filter, CheckSquare, Square, CheckCircle, XCircle } from 'lucide-react'
 import { useProducts, useUpdateProduct, useDeleteProduct, useBulkDeleteProducts, useApproveProduct, useRejectProduct } from '../api/hooks/useProducts'
 import { useCategories } from '../api/hooks/useCategories'
 import ProductModal from '../components/products/ProductModal'
@@ -175,10 +175,6 @@ const Products = () => {
                     >
                         <Trash2 className="w-4 h-4" />
                         Delete Selected
-                    </button>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-gray-600 rounded-md hover:bg-gray-50 text-sm font-medium shadow-sm">
-                        <Archive className="w-4 h-4" />
-                        Archive Selected
                     </button>
                 </div>
             )}

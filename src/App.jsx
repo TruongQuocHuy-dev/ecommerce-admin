@@ -91,7 +91,7 @@ function App() {
                     />
 
                     <Route
-                        path="products/*"
+                        path="products"
                         element={
                             <ProtectedRoute allowedRoles={PERMISSIONS.VIEW_PRODUCTS}>
                                 <Products />
