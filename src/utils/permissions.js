@@ -27,6 +27,10 @@ export const PERMISSIONS = {
     MANAGE_PRODUCTS: [ROLES.SUPER_ADMIN, ROLES.PRODUCT_MANAGER],
     APPROVE_PRODUCTS: [ROLES.SUPER_ADMIN, ROLES.PRODUCT_MANAGER],
 
+    // Categories
+    VIEW_CATEGORIES: [ROLES.SUPER_ADMIN, ROLES.PRODUCT_MANAGER],
+    MANAGE_CATEGORIES: [ROLES.SUPER_ADMIN, ROLES.PRODUCT_MANAGER],
+
     // Orders
     VIEW_ORDERS: [ROLES.SUPER_ADMIN, ROLES.ORDER_MANAGER, ROLES.SUPPORT, ROLES.PRODUCT_MANAGER],
     MANAGE_ORDERS: [ROLES.SUPER_ADMIN, ROLES.ORDER_MANAGER],
@@ -60,9 +64,11 @@ export const PERMISSIONS = {
  */
 export const hasPermission = (userRole, allowedRoles) => {
     const normalizedUserRole = normalizeRole(userRole)
-    const normalizedAllowedRoles = allowedRoles.map(normalizeRole)
+    const safeAllowedRoles = Array.isArray(allowedRoles) ? allowedRoles : []
+    const normalizedAllowedRoles = safeAllowedRoles.map(normalizeRole)
 
     if (!normalizedUserRole) return false
     if (normalizedUserRole === ROLES.SUPER_ADMIN) return true
+    if (normalizedAllowedRoles.length === 0) return false
     return normalizedAllowedRoles.includes(normalizedUserRole)
 }

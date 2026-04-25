@@ -166,8 +166,18 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
         data.append('price', formData.price)
         data.append('stock', formData.stock)
         data.append('category', formData.category)
-        if (formData.brand) data.append('brand', formData.brand)
-        if (formData.supplier) data.append('supplier', formData.supplier)
+
+        if (!formData.brand || !formData.supplier) {
+            setValidationErrors((prev) => ({
+                ...prev,
+                brand: !formData.brand ? 'Brand is required' : prev.brand,
+                supplier: !formData.supplier ? 'Supplier is required' : prev.supplier,
+            }))
+            return
+        }
+
+        data.append('brand', formData.brand)
+        data.append('supplier', formData.supplier)
         data.append('isFeatured', formData.isFeatured)
 
         // SEO Fields
@@ -442,12 +452,21 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Brand
+                                            Brand *
                                         </label>
                                         <select
+                                            required
                                             value={formData.brand}
-                                            onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, brand: e.target.value })
+                                                if (validationErrors.brand) {
+                                                    setValidationErrors((prev) => ({ ...prev, brand: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.brand ? 'border-red-400' : 'border-gray-300'
+                                            )}
                                         >
                                             <option value="">Select a Brand</option>
                                             {brands.map((brand) => (
@@ -456,16 +475,28 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 </option>
                                             ))}
                                         </select>
+                                        {validationErrors.brand && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.brand}</p>
+                                        )}
                                     </div>
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Supplier
+                                            Supplier *
                                         </label>
                                         <select
+                                            required
                                             value={formData.supplier}
-                                            onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, supplier: e.target.value })
+                                                if (validationErrors.supplier) {
+                                                    setValidationErrors((prev) => ({ ...prev, supplier: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.supplier ? 'border-red-400' : 'border-gray-300'
+                                            )}
                                         >
                                             <option value="">Select a Supplier</option>
                                             {suppliers.map((supplier) => (
@@ -474,6 +505,9 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 </option>
                                             ))}
                                         </select>
+                                        {validationErrors.supplier && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.supplier}</p>
+                                        )}
                                     </div>
 
                                     <div className="col-span-2">

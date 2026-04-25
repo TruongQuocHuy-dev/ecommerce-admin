@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { Search, Edit, Trash2, Eye, Filter, CheckSquare, Square, CheckCircle, XCircle, Package } from 'lucide-react'
 import { useProducts, useUpdateProduct, useDeleteProduct, useBulkDeleteProducts, useApproveProduct, useRejectProduct } from '../api/hooks/useProducts'
 import { useCategories } from '../api/hooks/useCategories'
+import { useBrands } from '../api/hooks/useBrands'
+import { useSuppliers } from '../api/hooks/useSuppliers'
 import ProductModal from '../components/products/ProductModal'
 import ProductCommandCenterHeader from '../components/products/ProductCommandCenterHeader'
 import ProductSummaryCards from '../components/products/ProductSummaryCards'
@@ -16,6 +18,8 @@ const Products = () => {
     const [page, setPage] = useState(1)
     const [categoryFilter, setCategoryFilter] = useState('')
     const [approvalFilter, setApprovalFilter] = useState('')
+    const [brandFilter, setBrandFilter] = useState('')
+    const [supplierFilter, setSupplierFilter] = useState('')
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState(null)
     const [modalMode, setModalMode] = useState('create')
@@ -25,8 +29,10 @@ const Products = () => {
     const canManageProducts = hasPermission(currentUser?.role, PERMISSIONS.MANAGE_PRODUCTS)
 
     // Data Hooks
-    const { data, isLoading } = useProducts(page, 10, search, categoryFilter, approvalFilter)
+    const { data, isLoading } = useProducts(page, 10, search, categoryFilter, approvalFilter, brandFilter, supplierFilter)
     const { data: categories = [] } = useCategories()
+    const { data: brands = [] } = useBrands()
+    const { data: suppliers = [] } = useSuppliers()
     const updateProduct = useUpdateProduct()
     const deleteProduct = useDeleteProduct()
     const bulkDeleteProducts = useBulkDeleteProducts()
@@ -59,10 +65,12 @@ const Products = () => {
         setSearch('')
         setCategoryFilter('')
         setApprovalFilter('')
+        setBrandFilter('')
+        setSupplierFilter('')
         setPage(1)
     }
 
-    const hasActiveFilters = search || categoryFilter || approvalFilter
+    const hasActiveFilters = search || categoryFilter || approvalFilter || brandFilter || supplierFilter
 
     // Helper to flatten hierarchical categories for the dropdown
     const flattenCategories = (cats, level = 0) => {
@@ -161,7 +169,7 @@ const Products = () => {
                             className="w-full rounded-2xl border border-slate-300 bg-slate-50 py-3 pl-10 pr-4 outline-none transition focus:border-cyan-500 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
                         />
                     </div>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 xl:w-auto xl:min-w-[540px]">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5 xl:w-auto xl:min-w-[900px]">
                         <select
                             value={categoryFilter}
                             onChange={(e) => setCategoryFilter(e.target.value)}
@@ -171,6 +179,32 @@ const Products = () => {
                             {flatCategories.map(cat => (
                                 <option key={cat.id} value={cat.id}>
                                     {'\u00A0'.repeat(cat.level * 2)}{cat.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={brandFilter}
+                            onChange={(e) => setBrandFilter(e.target.value)}
+                            className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
+                        >
+                            <option value="">All brands</option>
+                            {brands.map((brand) => (
+                                <option key={brand._id || brand.id} value={brand._id || brand.id}>
+                                    {brand.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={supplierFilter}
+                            onChange={(e) => setSupplierFilter(e.target.value)}
+                            className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
+                        >
+                            <option value="">All suppliers</option>
+                            {suppliers.map((supplier) => (
+                                <option key={supplier._id || supplier.id} value={supplier._id || supplier.id}>
+                                    {supplier.name}
                                 </option>
                             ))}
                         </select>
