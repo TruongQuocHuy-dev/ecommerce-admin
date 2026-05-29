@@ -3,12 +3,12 @@ import api from '../client'
 import { ENDPOINTS } from '../endpoints'
 import toast from 'react-hot-toast'
 
-export const useUsers = (page = 1, limit = 10, search = '') => {
+export const useUsers = (page = 1, limit = 10, search = '', role = '') => {
     return useQuery({
-        queryKey: ['users', page, limit, search],
+        queryKey: ['users', page, limit, search, role],
         queryFn: async () => {
             try {
-                const response = await api.get(`${ENDPOINTS.USERS.LIST}?page=${page}&limit=${limit}&search=${search}`)
+                const response = await api.get(`${ENDPOINTS.USERS.LIST}?page=${page}&limit=${limit}&search=${search}&role=${role}`)
                 return response.data?.data || { users: [], pagination: {} }
             } catch (error) {
                 console.error('Failed to fetch users', error)

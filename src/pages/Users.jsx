@@ -12,6 +12,7 @@ const Users = () => {
     const { user: currentUser } = useAuthStore()
     const { t } = useTranslation()
     const [search, setSearch] = useState('')
+    const [selectedRole, setSelectedRole] = useState('')
     const [page, setPage] = useState(1)
     const [selectedUser, setSelectedUser] = useState(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -20,7 +21,7 @@ const Users = () => {
     const canManageUsers = hasPermission(currentUser?.role, PERMISSIONS.MANAGE_USERS)
 
     // Data Hooks
-    const { data, isLoading } = useUsers(page, 10, search)
+    const { data, isLoading } = useUsers(page, 10, search, selectedRole)
     const updateUser = useUpdateUser()
     const deleteUser = useDeleteUser()
 
@@ -28,6 +29,16 @@ const Users = () => {
     const pagination = data?.pagination || {}
 
     // Handlers
+    const handleRoleChange = (role) => {
+        setSelectedRole(role)
+        setPage(1)
+    }
+
+    const handleSearchChange = (value) => {
+        setSearch(value)
+        setPage(1)
+    }
+
     const handleEdit = (user) => {
         setSelectedUser(user)
         setIsModalOpen(true)
@@ -60,7 +71,7 @@ const Users = () => {
                 {canManageUsers && (
                     <button
                         onClick={() => { setSelectedUser(null); setIsModalOpen(true) }}
-                        className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                        className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
                     >
                         <Plus className="w-5 h-5 mr-2" />
                         {t('users.addUser')}
@@ -68,30 +79,48 @@ const Users = () => {
                 )}
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                    <input
-                        type="text"
-                        placeholder={t('users.searchPlaceholder')}
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:border-primary-500 focus:bg-white focus:ring-2 focus:ring-primary-500/20 outline-none transition-all text-slate-900 placeholder-slate-500"
-                    />
-                </div>
-                <div className="flex gap-2">
-                    <select className="px-4 py-2 border border-gray-300 rounded-lg focus:border-primary-500 outline-none bg-white">
-                        <option value="">All Roles</option>
-                        <option value="admin">Admin</option>
-                        <option value="seller">Seller</option>
-                        <option value="user">User</option>
-                    </select>
-                </div>
-            </div>
-
-            {/* Table */}
+            {/* Table and Filter Card */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                {/* Tabs & Search Header */}
+                <div className="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 p-4 border-b border-slate-200 bg-slate-50/50">
+                    <div className="flex flex-wrap gap-2">
+                        {[
+                            { id: '', name: t('users.allRoles'), icon: null },
+                            { id: 'admin', name: t('users.roles.admin'), icon: Shield },
+                            { id: 'seller', name: t('users.roles.seller'), icon: ShoppingBag },
+                            { id: 'user', name: t('users.roles.user'), icon: null }
+                        ].map((tab) => {
+                            const Icon = tab.icon;
+                            const isActive = selectedRole === tab.id;
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => handleRoleChange(tab.id)}
+                                    className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-all border outline-none ${
+                                        isActive
+                                            ? 'bg-primary-600 text-white border-primary-600 shadow-sm'
+                                            : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border-slate-200'
+                                    }`}
+                                >
+                                    {Icon && <Icon className="w-4 h-4" />}
+                                    {tab.name}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <div className="relative w-full lg:w-72">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder={t('users.searchPlaceholder')}
+                            value={search}
+                            onChange={(e) => handleSearchChange(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all text-slate-900 placeholder-slate-400"
+                        />
+                    </div>
+                </div>
+
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-slate-50 border-b border-slate-200">
