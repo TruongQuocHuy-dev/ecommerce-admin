@@ -30,15 +30,22 @@ const Card = ({ title, value, icon: Icon, trend, trendUp, description, className
     }
 
     return (
-        <div className={clsx(
-            "relative group",
-            "bg-white border border-slate-200 rounded-2xl p-6",
-            "shadow-sm hover:shadow-xl hover:shadow-primary-500/5",
-            "transition-all duration-300 hover:-translate-y-1",
-            className
-        )}>
+        <div
+            role="region"
+            aria-labelledby={title ? `card-${title.replace(/\s+/g, '-').toLowerCase()}` : undefined}
+            tabIndex={0}
+            className={clsx(
+                "relative group",
+                "bg-white border border-slate-200 rounded-2xl p-6",
+                "shadow-sm hover:shadow-md",
+                "transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2",
+                // make cards stretch to equal heights inside grid
+                "h-full flex flex-col justify-between",
+                className
+            )}
+        >
             {/* Content */}
-            <div className="relative z-10">
+            <div className="relative z-10 flex-1">
                 <div className="flex items-center justify-between mb-4">
                     <div className={clsx(
                         "p-3 rounded-xl transition-all duration-300 group-hover:scale-110",
@@ -59,10 +66,10 @@ const Card = ({ title, value, icon: Icon, trend, trendUp, description, className
                     )}
                 </div>
 
-                <h3 className="text-slate-600 text-sm font-medium mb-1">{title}</h3>
+                <h3 id={title ? `card-${title.replace(/\s+/g, '-').toLowerCase()}` : undefined} className="text-slate-600 text-sm font-medium mb-1">{title}</h3>
                 <div className="flex items-baseline">
-                    <p className="text-3xl font-bold text-slate-900">{value}</p>
-                    {description && <span className="ml-2 text-sm text-slate-500">{description}</span>}
+                    <p aria-live="polite" className="text-3xl font-bold text-slate-900">{value}</p>
+                    {description && <span className="ml-2 text-sm text-slate-500" id={description ? `${title ? `card-${title.replace(/\s+/g, '-').toLowerCase()}-desc` : undefined}` : undefined} aria-hidden="false">{description}</span>}
                 </div>
             </div>
 
