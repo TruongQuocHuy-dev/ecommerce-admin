@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, Tag, AlertCircle, Image as ImageIcon } from 'lucide-react';
 import clsx from 'clsx';
+import { useTranslation } from '../../i18n/index.jsx';
 
 const ProductVariants = ({
     formData,
@@ -10,6 +11,7 @@ const ProductVariants = ({
     skus,
     setSkus
 }) => {
+    const { t } = useTranslation();
 
     // --- Handlers for Tiers ---
 
@@ -144,7 +146,7 @@ const ProductVariants = ({
         <div className="space-y-6 animate-fade-in">
             <div className="border-b border-gray-100 pb-2 flex justify-between items-center">
                 <h3 className="text-lg font-semibold text-slate-800">
-                    Product Variants
+                    {t('products.variants.title')}
                 </h3>
             </div>
 
@@ -161,10 +163,10 @@ const ProductVariants = ({
 
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div className="md:col-span-1">
-                                <label className="block text-xs font-medium text-slate-500 mb-1">Variation Name</label>
+                                <label className="block text-xs font-medium text-slate-500 mb-1">{t('products.variants.variationName')}</label>
                                 <input
                                     type="text"
-                                    placeholder="e.g. Color, Size"
+                                    placeholder={t('products.variants.variationPlaceholder')}
                                     value={tier.name}
                                     onChange={(e) => updateTierName(tIndex, e.target.value)}
                                     className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500/20 outline-none"
@@ -172,7 +174,7 @@ const ProductVariants = ({
                             </div>
                             <div className="md:col-span-3">
                                 <label className="block text-xs font-medium text-slate-500 mb-1">
-                                    Options (Press Enter to add)
+                                    {t('products.variants.options')}
                                 </label>
                                 <div className="flex bg-white border border-slate-200 rounded-lg p-1.5 flex-wrap gap-2 focus-within:ring-2 focus-within:ring-primary-500/20 transition-all">
                                     {tier.options.map((opt, oIndex) => (
@@ -188,7 +190,7 @@ const ProductVariants = ({
                                     ))}
                                     <input
                                         type="text"
-                                        placeholder={tier.options.length === 0 ? "Type option and press Enter..." : ""}
+                                        placeholder={tier.options.length === 0 ? t('products.variants.optionsPlaceholder') : ""}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -210,7 +212,7 @@ const ProductVariants = ({
                         className="flex items-center gap-2 text-primary-600 font-medium hover:text-primary-700 text-sm"
                     >
                         <Plus className="w-4 h-4" />
-                        Add Variation
+                        {t('products.variants.addVariation')}
                     </button>
                 )}
             </div>
@@ -220,18 +222,18 @@ const ProductVariants = ({
                 <div className="mt-6">
                     <h4 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                         <Tag className="w-4 h-4" />
-                        Variant Combinations ({skus.length})
+                        {t('products.variants.combinations', { count: skus.length })}
                     </h4>
                     <div className="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
                         <table className="w-full text-sm">
                             <thead className="bg-slate-50 border-b border-slate-200">
                                 <tr>
-                                    <th className="px-4 py-3 text-left font-medium text-slate-600">Variant</th>
-                                    <th className="px-4 py-3 text-center font-medium text-slate-600">Image</th>
-                                    <th className="px-4 py-3 text-left font-medium text-slate-600">Price ($)</th>
-                                    <th className="px-4 py-3 text-left font-medium text-slate-600">Stock</th>
-                                    <th className="px-4 py-3 text-left font-medium text-slate-600">SKU Code</th>
-                                    <th className="px-4 py-3 text-center font-medium text-slate-600">Active</th>
+                                    <th className="px-4 py-3 text-left font-medium text-slate-600">{t('products.variants.tableHeaderVariant')}</th>
+                                    <th className="px-4 py-3 text-center font-medium text-slate-600">{t('products.variants.tableHeaderImage')}</th>
+                                    <th className="px-4 py-3 text-left font-medium text-slate-600">{t('products.variants.tableHeaderPrice')}</th>
+                                    <th className="px-4 py-3 text-left font-medium text-slate-600">{t('products.variants.tableHeaderStock')}</th>
+                                    <th className="px-4 py-3 text-left font-medium text-slate-600">{t('products.variants.tableHeaderSku')}</th>
+                                    <th className="px-4 py-3 text-center font-medium text-slate-600">{t('products.variants.tableHeaderActive')}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
@@ -300,7 +302,7 @@ const ProductVariants = ({
             {skus.length === 0 && tierVariations.length > 0 && (
                 <div className="flex items-center gap-2 p-4 bg-orange-50 text-orange-700 rounded-xl border border-orange-100">
                     <AlertCircle className="w-5 h-5 flex-shrink-0" />
-                    <p className="text-sm">Add options above to generate variant combinations.</p>
+                    <p className="text-sm">{t('products.variants.optionsRequiredWarning')}</p>
                 </div>
             )}
         </div>

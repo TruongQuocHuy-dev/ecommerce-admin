@@ -170,8 +170,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
         if (!formData.brand || !formData.supplier) {
             setValidationErrors((prev) => ({
                 ...prev,
-                brand: !formData.brand ? 'Brand is required' : prev.brand,
-                supplier: !formData.supplier ? 'Supplier is required' : prev.supplier,
+                brand: !formData.brand ? t('products.errors.brandRequired') : prev.brand,
+                supplier: !formData.supplier ? t('products.errors.supplierRequired') : prev.supplier,
             }))
             return
         }
@@ -204,7 +204,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
         const currentImageCount = existingImages.length + newImageFiles.length
         if (currentImageCount === 0) {
-            setValidationErrors({ images: 'Product must have at least one image' })
+            setValidationErrors({ images: t('products.errors.imageRequired') })
             return
         }
 
@@ -258,9 +258,9 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
     // Tabs Configuration
     const tabs = [
-        { id: 'general', label: 'General Info', icon: Package },
-        { id: 'variants', label: 'Variants', icon: Layers },
-        { id: 'seo', label: 'SEO', icon: Search },
+        { id: 'general', label: t('products.tabs.general'), icon: Package },
+        { id: 'variants', label: t('products.tabs.variants'), icon: Layers },
+        { id: 'seo', label: t('products.tabs.seo'), icon: Search },
     ]
 
     return (
@@ -269,7 +269,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-white z-10">
                     <h2 className="text-xl font-bold text-gray-900">
-                        {mode === 'create' ? 'Add New Product' : 'Edit Product'}
+                        {mode === 'create' ? t('modal.addProduct') : t('modal.editProduct')}
                     </h2>
                     <button
                         onClick={onClose}
@@ -327,7 +327,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="col-span-2">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Product Name *
+                                            {t('products.form.name')}
                                         </label>
                                         <input
                                             type="text"
@@ -343,7 +343,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
                                                 validationErrors.name ? 'border-red-400' : 'border-gray-300'
                                             )}
-                                            placeholder="Enter product name"
+                                            placeholder={t('products.form.namePlaceholder')}
                                         />
                                         {validationErrors.name && (
                                             <p className="mt-1 text-xs text-red-600">{validationErrors.name}</p>
@@ -352,7 +352,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Price ($) *
+                                            {t('products.form.price')}
                                         </label>
                                         <input
                                             type="number"
@@ -370,7 +370,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
                                                 validationErrors.price ? 'border-red-400' : 'border-gray-300'
                                             )}
-                                            placeholder="0.00"
+                                            placeholder={t('products.form.pricePlaceholder')}
                                         />
                                         {validationErrors.price && (
                                             <p className="mt-1 text-xs text-red-600">{validationErrors.price}</p>
@@ -379,7 +379,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Stock *
+                                            {t('products.form.stock')}
                                         </label>
                                         <input
                                             type="number"
@@ -396,20 +396,20 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
                                                 validationErrors.stock ? 'border-red-400' : 'border-gray-300'
                                             )}
-                                            placeholder="0"
+                                            placeholder={t('products.form.stockPlaceholder')}
                                             disabled={skus.length > 0} // Disable if variants exist
                                         />
                                         {validationErrors.stock && (
                                             <p className="mt-1 text-xs text-red-600">{validationErrors.stock}</p>
                                         )}
                                         {skus.length > 0 && (
-                                            <p className="text-xs text-orange-500 mt-1">Managed automatically by variants</p>
+                                            <p className="text-xs text-orange-500 mt-1">{t('products.form.managedByVariants')}</p>
                                         )}
                                     </div>
 
                                     <div className="col-span-2">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Category *
+                                            {t('products.form.category')}
                                         </label>
                                         <select
                                             required
@@ -425,7 +425,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 validationErrors.category ? 'border-red-400' : 'border-gray-300'
                                             )}
                                         >
-                                            <option value="">Select a Category</option>
+                                            <option value="">{t('products.form.selectCategory')}</option>
                                             {flatCategories.map((cat) => (
                                                 <option key={cat.id} value={cat.id}>
                                                     {'\u00A0'.repeat(cat.level * 2)}{cat.name}
@@ -446,13 +446,13 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                             className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                                         />
                                         <label htmlFor="isFeatured" className="text-sm font-medium text-gray-700 cursor-pointer">
-                                            Feature this product (shows on homepage)
+                                            {t('products.form.featureProduct')}
                                         </label>
                                     </div>
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Brand *
+                                            {t('products.form.brand')}
                                         </label>
                                         <select
                                             required
@@ -468,7 +468,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 validationErrors.brand ? 'border-red-400' : 'border-gray-300'
                                             )}
                                         >
-                                            <option value="">Select a Brand</option>
+                                            <option value="">{t('products.form.selectBrand')}</option>
                                             {brands.map((brand) => (
                                                 <option key={brand._id || brand.id} value={brand._id || brand.id}>
                                                     {brand.name}
@@ -482,7 +482,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Supplier *
+                                            {t('products.form.supplier')}
                                         </label>
                                         <select
                                             required
@@ -498,7 +498,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 validationErrors.supplier ? 'border-red-400' : 'border-gray-300'
                                             )}
                                         >
-                                            <option value="">Select a Supplier</option>
+                                            <option value="">{t('products.form.selectSupplier')}</option>
                                             {suppliers.map((supplier) => (
                                                 <option key={supplier._id || supplier.id} value={supplier._id || supplier.id}>
                                                     {supplier.name}
@@ -512,7 +512,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
                                     <div className="col-span-2">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Description *
+                                            {t('products.form.description')}
                                         </label>
                                         <ReactQuill
                                             theme="snow"
@@ -540,7 +540,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
                                     <div className="col-span-2">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            Product Images
+                                            {t('products.form.images')}
                                         </label>
                                         <div className="mb-4 flex flex-wrap gap-4">
                                             {existingImages.map((src, index) => (
@@ -578,12 +578,12 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                                 />
                                                 <div className="text-center text-gray-400 group-hover:text-primary-500 transition-colors">
                                                     <Upload className="w-6 h-6 mx-auto mb-1" />
-                                                    <span className="text-xs">Upload</span>
+                                                    <span className="text-xs">{t('products.form.upload')}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <p className="text-xs text-gray-500">
-                                            Upload up to 5 images. Supported formats: JPG, PNG, WEBP.
+                                            {t('products.form.imageSpecs')}
                                         </p>
                                         {validationErrors.images && (
                                             <p className="mt-1 text-xs text-red-600">{validationErrors.images}</p>
@@ -622,7 +622,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                         onClick={onClose}
                         className="px-5 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 font-medium transition-colors"
                     >
-                        Cancel
+                        {t('common.cancel')}
                     </button>
                     <button
                         onClick={handleSubmit}
@@ -634,7 +634,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                         ) : (
                             <Save className="w-4 h-4" />
                         )}
-                        {mode === 'create' ? 'Create Product' : 'Save Changes'}
+                        {mode === 'create' ? t('products.createProduct') : t('products.saveChanges')}
                     </button>
                 </div>
             </div>

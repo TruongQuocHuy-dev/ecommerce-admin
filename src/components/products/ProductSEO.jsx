@@ -12,12 +12,12 @@ const ProductSEO = ({ formData, setFormData }) => {
     return (
         <div className="space-y-4 animate-fade-in">
             <h3 className="text-lg font-semibold text-slate-800 border-b border-gray-100 pb-2">
-                Search Engine Optimization (SEO)
+                {t('products.seo.title')}
             </h3>
 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Meta Title
+                    {t('products.seo.metaTitle')}
                 </label>
                 <input
                     type="text"
@@ -25,17 +25,17 @@ const ProductSEO = ({ formData, setFormData }) => {
                     value={formData.metaTitle || ''}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
-                    placeholder="Enter meta title (max 200 chars)"
+                    placeholder={t('products.seo.metaTitlePlaceholder')}
                     maxLength={200}
                 />
                 <p className="mt-1 text-xs text-slate-400">
-                    {formData.metaTitle?.length || 0}/200 characters
+                    {t('products.seo.charCount', { count: formData.metaTitle?.length || 0, total: 200 })}
                 </p>
             </div>
 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Meta Keywords
+                    {t('products.seo.metaKeywords')}
                 </label>
                 <input
                     type="text"
@@ -43,17 +43,17 @@ const ProductSEO = ({ formData, setFormData }) => {
                     value={formData.metaKeywords || ''}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
-                    placeholder="keyword1, keyword2, keyword3"
+                    placeholder={t('products.seo.metaKeywordsPlaceholder')}
                     maxLength={200}
                 />
                 <p className="mt-1 text-xs text-slate-400">
-                    Separate keywords with commas. {formData.metaKeywords?.length || 0}/200 characters
+                    {t('products.seo.metaKeywordsHelp', { count: formData.metaKeywords?.length || 0, total: 200 })}
                 </p>
             </div>
 
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Meta Description
+                    {t('products.seo.metaDescription')}
                 </label>
                 <textarea
                     rows={4}
@@ -61,25 +61,25 @@ const ProductSEO = ({ formData, setFormData }) => {
                     value={formData.metaDescription || ''}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all resize-none"
-                    placeholder="Enter meta description (max 300 chars)"
+                    placeholder={t('products.seo.metaDescriptionPlaceholder')}
                     maxLength={300}
                 />
                 <p className="mt-1 text-xs text-slate-400">
-                    {formData.metaDescription?.length || 0}/300 characters
+                    {t('products.seo.charCount', { count: formData.metaDescription?.length || 0, total: 300 })}
                 </p>
             </div>
 
             <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-4">
-                <h4 className="text-sm font-medium text-slate-700 mb-2">Google Preview</h4>
+                <h4 className="text-sm font-medium text-slate-700 mb-2">{t('products.seo.googlePreview')}</h4>
                 <div className="space-y-1">
                     <p className="text-blue-600 text-lg hover:underline truncate cursor-pointer font-medium">
-                        {formData.metaTitle || formData.name || 'Product Meta Title'}
+                        {formData.metaTitle || formData.name || t('products.seo.defaultMetaTitle')}
                     </p>
                     <p className="text-green-700 text-sm truncate">
                         https://your-store.com/products/{formData.slug || 'product-slug'}
                     </p>
                     <p className="text-slate-600 text-sm line-clamp-2">
-                        {formData.metaDescription || formData.description || 'This is how your product will appear in search engine results.'}
+                        {formData.metaDescription || formData.description || t('products.seo.defaultMetaDescription')}
                     </p>
                 </div>
             </div>

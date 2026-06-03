@@ -100,7 +100,7 @@ const Products = () => {
     }
 
     const handleDelete = (id) => {
-        if (confirm('Are you sure you want to delete this product?')) {
+        if (confirm(t('products.deleteConfirm'))) {
             deleteProduct.mutate(id)
         }
     }
@@ -122,7 +122,7 @@ const Products = () => {
     }
 
     const handleBulkDelete = () => {
-        if (confirm(`Delete ${selectedIds.length} selected products?`)) {
+        if (confirm(t('products.deleteSelectedConfirm', { count: selectedIds.length }))) {
             bulkDeleteProducts.mutate(selectedIds, {
                 onSuccess: () => setSelectedIds([])
             })
@@ -131,11 +131,11 @@ const Products = () => {
 
     const handleApprovalChange = (id, newStatus) => {
         if (newStatus === 'approved') {
-            if (confirm('Approve this product?')) {
+            if (confirm(t('products.approveConfirm'))) {
                 approveProduct.mutate(id)
             }
         } else if (newStatus === 'rejected') {
-            const reason = prompt('Enter rejection reason (optional):')
+            const reason = prompt(t('products.rejectPrompt'))
             if (reason !== null) {
                 rejectProduct.mutate({ id, details: reason })
             }
@@ -163,7 +163,7 @@ const Products = () => {
                         <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Search by product name or SKU code..."
+                            placeholder={t('products.searchPlaceholderGrid')}
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="w-full rounded-2xl border border-slate-300 bg-slate-50 py-3 pl-10 pr-4 outline-none transition focus:border-cyan-500 focus:bg-white focus:ring-4 focus:ring-cyan-500/10"
@@ -175,7 +175,7 @@ const Products = () => {
                             onChange={(e) => setCategoryFilter(e.target.value)}
                             className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
                         >
-                            <option value="">All categories</option>
+                            <option value="">{t('products.allCategories')}</option>
                             {flatCategories.map(cat => (
                                 <option key={cat.id} value={cat.id}>
                                     {'\u00A0'.repeat(cat.level * 2)}{cat.name}
@@ -188,7 +188,7 @@ const Products = () => {
                             onChange={(e) => setBrandFilter(e.target.value)}
                             className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
                         >
-                            <option value="">All brands</option>
+                            <option value="">{t('products.allBrands')}</option>
                             {brands.map((brand) => (
                                 <option key={brand._id || brand.id} value={brand._id || brand.id}>
                                     {brand.name}
@@ -201,7 +201,7 @@ const Products = () => {
                             onChange={(e) => setSupplierFilter(e.target.value)}
                             className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
                         >
-                            <option value="">All suppliers</option>
+                            <option value="">{t('products.allSuppliers')}</option>
                             {suppliers.map((supplier) => (
                                 <option key={supplier._id || supplier.id} value={supplier._id || supplier.id}>
                                     {supplier.name}
@@ -214,10 +214,10 @@ const Products = () => {
                             onChange={(e) => setApprovalFilter(e.target.value)}
                             className="rounded-2xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none transition focus:border-cyan-500 focus:bg-white"
                         >
-                            <option value="">Approval status</option>
-                            <option value="pending">Chờ duyệt</option>
-                            <option value="approved">Đã duyệt</option>
-                            <option value="rejected">Đã từ chối</option>
+                            <option value="">{t('products.approvalStatus')}</option>
+                            <option value="pending">{t('products.summary.pending')}</option>
+                            <option value="approved">{t('products.summary.approved')}</option>
+                            <option value="rejected">{t('products.summary.rejected')}</option>
                         </select>
 
                         <button
@@ -227,7 +227,7 @@ const Products = () => {
                             className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-3 font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <Filter className="h-4 w-4" />
-                            Clear filters
+                            {t('products.clearFilters')}
                         </button>
                     </div>
                 </div>
@@ -236,14 +236,14 @@ const Products = () => {
             {/* Bulk Actions */}
             {selectedIds.length > 0 && canManageProducts && (
                 <div className="flex flex-col gap-3 rounded-2xl border border-cyan-200 bg-cyan-50 p-4 text-cyan-800 shadow-sm md:flex-row md:items-center md:justify-between animate-fade-in">
-                    <span className="text-sm font-medium">{selectedIds.length} items selected</span>
+                    <span className="text-sm font-medium">{t('products.itemsSelected', { count: selectedIds.length })}</span>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={handleBulkDelete}
                             className="inline-flex items-center gap-1.5 rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 shadow-sm transition hover:bg-red-50"
                         >
                             <Trash2 className="w-4 h-4" />
-                            Delete Selected
+                            {t('products.bulkDelete')}
                         </button>
                     </div>
                 </div>
@@ -254,11 +254,11 @@ const Products = () => {
                 <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
                     <div className="flex items-center justify-between gap-3">
                         <div>
-                            <h2 className="text-lg font-semibold text-slate-900">Product roster</h2>
-                            <p className="text-sm text-slate-500">Use the table for status updates, moderation, and quick edits.</p>
+                            <h2 className="text-lg font-semibold text-slate-900">{t('products.rosterTitle')}</h2>
+                            <p className="text-sm text-slate-500">{t('products.rosterSubtitle')}</p>
                         </div>
                         <p className="text-sm text-slate-500">
-                            Showing page {page} of {pagination.totalPages || 1}
+                            {t('products.showingPage', { current: page, total: pagination.totalPages || 1 })}
                         </p>
                     </div>
                 </div>
@@ -275,13 +275,13 @@ const Products = () => {
                                         )}
                                     </button>
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Product</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Category</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Price</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Stock</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Approval</th>
-                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">Active</th>
-                                <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">Actions</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{t('products.tableHeaders.product')}</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{t('products.tableHeaders.category')}</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{t('products.tableHeaders.price')}</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{t('products.tableHeaders.stock')}</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{t('products.tableHeaders.approval')}</th>
+                                <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">{t('products.tableHeaders.active')}</th>
+                                <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate-500">{t('products.tableHeaders.actions')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -301,8 +301,8 @@ const Products = () => {
                                                 <Package className="h-8 w-8" />
                                             </div>
                                             <div>
-                                                <p className="text-base font-semibold text-slate-800">No products found</p>
-                                                <p className="mt-1 text-sm text-slate-500">Try changing filters or create a new product to get started.</p>
+                                                <p className="text-base font-semibold text-slate-800">{t('products.noProducts')}</p>
+                                                <p className="mt-1 text-sm text-slate-500">{t('products.noProductsSubtitle')}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -345,7 +345,7 @@ const Products = () => {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-sm text-slate-600">
-                                                {product.category?.name || <span className="italic text-slate-400">No Category</span>}
+                                                {product.category?.name || <span className="italic text-slate-400">{t('products.noCategory')}</span>}
                                             </td>
                                             <td className="px-6 py-4 font-semibold text-slate-900">
                                                 ${product.price?.toFixed(2)}
@@ -363,12 +363,12 @@ const Products = () => {
                                                         disabled={!canManageProducts}
                                                         className={`rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-wide outline-none transition ${approvalTone}`}
                                                     >
-                                                        <option value="pending">Pending</option>
-                                                        <option value="approved">Approved</option>
-                                                        <option value="rejected">Rejected</option>
+                                                        <option value="pending">{t('products.summary.pending')}</option>
+                                                        <option value="approved">{t('products.summary.approved')}</option>
+                                                        <option value="rejected">{t('products.summary.rejected')}</option>
                                                     </select>
                                                     {product.approvalStatus === 'rejected' && (
-                                                        <p className="text-xs text-rose-600 line-clamp-1">Needs rework before republish</p>
+                                                        <p className="text-xs text-rose-600 line-clamp-1">{t('products.needsRework')}</p>
                                                     )}
                                                 </div>
                                             </td>
@@ -379,8 +379,8 @@ const Products = () => {
                                                     disabled={!canManageProducts}
                                                     className={`rounded-xl border px-3 py-2 text-xs font-semibold uppercase tracking-wide outline-none transition ${activeTone}`}
                                                 >
-                                                    <option value="true">Active</option>
-                                                    <option value="false">Inactive</option>
+                                                    <option value="true">{t('products.activeLabel')}</option>
+                                                    <option value="false">{t('products.inactiveLabel')}</option>
                                                 </select>
                                             </td>
                                             <td className="px-6 py-4">
@@ -390,16 +390,16 @@ const Products = () => {
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); handleEdit(product) }}
                                                                 className="rounded-xl p-2 text-blue-600 transition hover:bg-blue-50"
-                                                                title="Edit product"
+                                                                title={t('products.editTooltip')}
                                                             >
-                                                                <Edit className="w-4 h-4" />
+                                                                 <Edit className="w-4 h-4" />
                                                             </button>
                                                             <button
                                                                 onClick={(e) => { e.stopPropagation(); handleDelete(product.id || product._id) }}
                                                                 className="rounded-xl p-2 text-red-500 transition hover:bg-red-50"
-                                                                title="Delete product"
+                                                                title={t('products.deleteTooltip')}
                                                             >
-                                                                <Trash2 className="w-4 h-4" />
+                                                                 <Trash2 className="w-4 h-4" />
                                                             </button>
                                                         </>
                                                     )}
@@ -418,7 +418,7 @@ const Products = () => {
             {pagination.totalPages > 1 && (
                 <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between">
                     <p className="text-sm font-medium text-slate-600">
-                        Showing page {page} of {pagination.totalPages}
+                        {t('products.showingPage', { current: page, total: pagination.totalPages })}
                     </p>
                     <div className="flex gap-2">
                         <button
@@ -426,14 +426,14 @@ const Products = () => {
                             disabled={page === 1}
                             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                         >
-                            Previous
+                            {t('common.previous')}
                         </button>
                         <button
                             onClick={() => setPage(p => p + 1)}
                             disabled={page >= pagination.totalPages}
                             className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                         >
-                            Next
+                            {t('common.next')}
                         </button>
                     </div>
                 </div>

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../client'
 import { ENDPOINTS } from '../endpoints'
 import toast from 'react-hot-toast'
+import { useTranslation } from '../../i18n'
 
 export const useProducts = (
     page = 1,
@@ -36,6 +37,7 @@ export const useProducts = (
 
 export const useCreateProduct = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async (data) => {
             const response = await api.post(ENDPOINTS.PRODUCTS.CREATE, data, {
@@ -45,14 +47,15 @@ export const useCreateProduct = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['products'])
-            toast.success('Product created successfully')
+            toast.success(t('toast.productCreated'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to create product')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.productCreatedError'))
     })
 }
 
 export const useUpdateProduct = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async ({ id, data }) => {
             const isFormData = data instanceof FormData
@@ -63,14 +66,15 @@ export const useUpdateProduct = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['products'])
-            toast.success('Product updated successfully')
+            toast.success(t('toast.productUpdated'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to update product')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.productUpdatedError'))
     })
 }
 
 export const useDeleteProduct = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async (id) => {
             await api.delete(ENDPOINTS.PRODUCTS.DELETE(id))
@@ -78,14 +82,15 @@ export const useDeleteProduct = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['products'])
-            toast.success('Product deleted successfully')
+            toast.success(t('toast.productDeleted'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to delete product')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.productDeletedError'))
     })
 }
 
 export const useBulkDeleteProducts = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async (ids) => {
             await api.post(ENDPOINTS.PRODUCTS.BULK_DELETE, { ids })
@@ -93,14 +98,15 @@ export const useBulkDeleteProducts = () => {
         },
         onSuccess: (ids) => {
             queryClient.invalidateQueries(['products'])
-            toast.success(`${ids.length} products deleted successfully`)
+            toast.success(t('toast.bulkProductsDeleted', { count: ids.length }))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to delete products')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.bulkProductsDeletedError'))
     })
 }
 
 export const useApproveProduct = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async (id) => {
             const response = await api.post(ENDPOINTS.PRODUCTS.APPROVE(id))
@@ -108,14 +114,15 @@ export const useApproveProduct = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['products'])
-            toast.success('Product approved successfully')
+            toast.success(t('toast.productApproved'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to approve product')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.productApprovedError'))
     })
 }
 
 export const useRejectProduct = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async ({ id, details }) => {
             const response = await api.post(ENDPOINTS.PRODUCTS.REJECT(id), { reason: details })
@@ -123,8 +130,8 @@ export const useRejectProduct = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['products'])
-            toast.success('Product rejected successfully')
+            toast.success(t('toast.productRejected'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to reject product')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.productRejectedError'))
     })
 }
