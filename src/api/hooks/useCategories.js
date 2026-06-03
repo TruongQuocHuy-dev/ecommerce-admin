@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../client'
 import { ENDPOINTS } from '../endpoints'
 import toast from 'react-hot-toast'
+import { useTranslation } from '../../i18n/index.jsx'
 
 export const useCategories = () => {
     return useQuery({
@@ -21,6 +22,7 @@ export const useCategories = () => {
 
 export const useCreateCategory = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async (data) => {
             // Check if data is FormData to set correct headers
@@ -32,14 +34,15 @@ export const useCreateCategory = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['categories'])
-            toast.success('Category created successfully')
+            toast.success(t('toast.categoryCreated'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to create category')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.categoryCreatedError'))
     })
 }
 
 export const useUpdateCategory = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async ({ id, data }) => {
             const isFormData = data instanceof FormData
@@ -50,14 +53,15 @@ export const useUpdateCategory = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['categories'])
-            toast.success('Category updated successfully')
+            toast.success(t('toast.categoryUpdated'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to update category')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.categoryUpdatedError'))
     })
 }
 
 export const useDeleteCategory = () => {
     const queryClient = useQueryClient()
+    const { t } = useTranslation()
     return useMutation({
         mutationFn: async (id) => {
             await api.delete(ENDPOINTS.CATEGORIES.DELETE(id))
@@ -65,8 +69,8 @@ export const useDeleteCategory = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries(['categories'])
-            toast.success('Category deleted successfully')
+            toast.success(t('toast.categoryDeleted'))
         },
-        onError: (error) => toast.error(error.response?.data?.message || 'Failed to delete category')
+        onError: (error) => toast.error(error.response?.data?.message || t('toast.categoryDeletedError'))
     })
 }

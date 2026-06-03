@@ -235,8 +235,8 @@ const Categories = () => {
     const handleDelete = (category) => {
         const childrenCount = Array.isArray(category.children) ? category.children.length : 0
         const message = childrenCount > 0
-            ? `Delete this category and unlink ${childrenCount} subcategories?`
-            : 'Delete this category?'
+            ? t('categories.deleteConfirmWithSub', { count: childrenCount })
+            : t('categories.deleteConfirm')
 
         if (confirm(message)) {
             deleteCategory.mutate(getCategoryId(category))
@@ -267,37 +267,41 @@ const Categories = () => {
 
             <section className="grid grid-cols-1 lg:grid-cols-3 gap-4" aria-label="Category statistics">
                 <div className="bg-white rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">Total Categories</p>
+                    <p className="text-xs uppercase tracking-wider text-slate-500">{t('categories.totalCategories')}</p>
                     <p className="mt-2 text-3xl font-bold text-slate-900">{stats.total || 0}</p>
                 </div>
                 <div className="bg-white rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">Danh mục gốc</p>
+                    <p className="text-xs uppercase tracking-wider text-slate-500">{t('categories.rootCategories')}</p>
                     <p className="mt-2 text-3xl font-bold text-slate-900">{categoryTree.length || 0}</p>
                 </div>
                 <div className="bg-white rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">Tree Depth</p>
+                    <p className="text-xs uppercase tracking-wider text-slate-500">{t('categories.treeDepth')}</p>
                     <p className="mt-2 text-3xl font-bold text-slate-900">{stats.maxDepth || 0}</p>
                 </div>
             </section>
 
             <section className="bg-white rounded-xl border border-slate-200 p-4" aria-label="Category filter and paging controls">
-                <label htmlFor="category-search" className="text-sm font-medium text-slate-700">Search category</label>
+                <label htmlFor="category-search" className="text-sm font-medium text-slate-700">{t('categories.searchCategory')}</label>
                 <div className="mt-2 relative">
                     <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                         id="category-search"
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
-                        placeholder="Search by name, slug, or description"
+                        placeholder={t('categories.searchPlaceholder')}
                         className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
                     />
                 </div>
                 <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <p className="text-sm text-slate-600">
-                        Hiển thị danh mục gốc {totalRoots === 0 ? 0 : startRootIndex + 1}-{Math.min(endRootIndex, totalRoots)} trên tổng {totalRoots}
+                        {t('categories.showingRootCategories', {
+                            start: totalRoots === 0 ? 0 : startRootIndex + 1,
+                            end: Math.min(endRootIndex, totalRoots),
+                            total: totalRoots
+                        })}
                     </p>
                     <div className="flex items-center gap-2">
-                        <label htmlFor="page-size" className="text-sm text-slate-600">Rows per page</label>
+                        <label htmlFor="page-size" className="text-sm text-slate-600">{t('categories.rowsPerPage')}</label>
                         <select
                             id="page-size"
                             value={pageSize}
@@ -322,13 +326,13 @@ const Categories = () => {
                         <CategoryCardSkeleton />
                     </div>
                 ) : treeRows.length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">No categories found</div>
+                    <div className="text-center py-12 text-slate-500">{t('categories.noCategories')}</div>
                 ) : (
                     <div>
                         <div className="grid grid-cols-[1.8fr_1fr_auto] gap-4 px-4 py-3 border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-600">
-                            <span>Name</span>
-                            <span>Details</span>
-                            <span>Actions</span>
+                            <span>{t('categories.tableHeaders.name')}</span>
+                            <span>{t('categories.tableHeaders.details')}</span>
+                            <span>{t('categories.tableHeaders.actions')}</span>
                         </div>
 
                         {treeRows.map(({ node: category, nodeId, level, hasChildren, childrenCount }) => {
@@ -364,7 +368,7 @@ const Categories = () => {
 
                                             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] bg-slate-100 text-slate-700 shrink-0">
                                                 <Layers3 className="w-3 h-3" />
-                                                Level {level + 1}
+                                                {t('categories.level', { level: level + 1 })}
                                             </span>
                                         </div>
 
@@ -377,10 +381,10 @@ const Categories = () => {
 
                                     <div>
                                         <p className="text-sm text-slate-700">
-                                            {category.parent?.name ? `Danh mục cha: ${category.parent.name}` : 'Danh mục gốc'}
+                                            {category.parent?.name ? `${t('categories.parent')}: ${category.parent.name}` : t('categories.rootCategory')}
                                         </p>
                                         <p className="text-xs text-slate-500 mt-1">
-                                            {hasChildren ? `${childrenCount} danh mục con trực tiếp` : 'Không có danh mục con'}
+                                            {hasChildren ? t('categories.directSubcategories', { count: childrenCount }) : t('categories.noSubcategories')}
                                         </p>
                                     </div>
 
@@ -389,7 +393,7 @@ const Categories = () => {
                                             onClick={() => handleEdit(category)}
                                             className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900 transition-colors"
                                             disabled={!canManageCategories}
-                                            title={canManageCategories ? 'Edit category' : 'No permission'}
+                                            title={canManageCategories ? t('categories.editTooltip') : t('categories.noPermission')}
                                         >
                                             <Edit className="w-4 h-4" />
                                         </button>
@@ -397,7 +401,7 @@ const Categories = () => {
                                             onClick={() => handleDelete(category)}
                                             className="p-2 hover:bg-red-50 rounded-lg text-red-500"
                                             disabled={!canManageCategories || deleteCategory.isPending}
-                                            title={canManageCategories ? 'Delete category' : 'No permission'}
+                                            title={canManageCategories ? t('categories.deleteTooltip') : t('categories.noPermission')}
                                         >
                                             <Trash2 className="w-4 h-4" />
                                         </button>
@@ -412,21 +416,21 @@ const Categories = () => {
 
             {!isLoading && totalPages > 1 && (
                 <nav className="flex items-center justify-between" aria-label="Category pagination">
-                    <p className="text-sm text-slate-600">Page {currentPage} / {totalPages}</p>
+                    <p className="text-sm text-slate-600">{t('categories.pagination.pageInfo', { current: currentPage, total: totalPages })}</p>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setCurrentPage(1)}
                             disabled={currentPage === 1}
                             className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            First
+                            {t('categories.pagination.first')}
                         </button>
                         <button
                             onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                             disabled={currentPage === 1}
                             className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Previous
+                            {t('categories.pagination.previous')}
                         </button>
                         {paginationItems.map((item, index) => {
                             if (typeof item !== 'number') {
@@ -455,18 +459,18 @@ const Categories = () => {
                             disabled={currentPage === totalPages}
                             className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Next
+                            {t('categories.pagination.next')}
                         </button>
                         <button
                             onClick={() => setCurrentPage(totalPages)}
                             disabled={currentPage === totalPages}
                             className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Last
+                            {t('categories.pagination.last')}
                         </button>
                     </div>
                 </nav>
-            )}
+            ) }
 
             <CategoryModal
                 isOpen={isModalOpen}

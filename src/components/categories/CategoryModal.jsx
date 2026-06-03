@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { X } from 'lucide-react'
 import { useCategories, useCreateCategory, useUpdateCategory } from '../../api/hooks/useCategories'
+import { useTranslation } from '../../i18n/index.jsx'
 
 const getCategoryId = (category) => category?._id || category?.id
 
@@ -61,6 +62,7 @@ const collectDescendantIds = (allCategories, parentId) => {
 }
 
 const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
+    const { t } = useTranslation()
     const [imageFile, setImageFile] = useState(null)
     const [imagePreview, setImagePreview] = useState(null)
     const [formData, setFormData] = useState({
@@ -149,7 +151,7 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
             <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
                 <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
                     <h2 className="text-xl font-bold text-gray-900">
-                        {mode === 'create' ? 'Add New Category' : 'Edit Category'}
+                        {mode === 'create' ? t('categories.createCategory') : t('categories.editCategory')}
                     </h2>
                     <button
                         onClick={onClose}
@@ -163,7 +165,7 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
                     {/* Image Upload */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Category Image
+                            {t('categories.image')}
                         </label>
                         <div className="flex items-center gap-4">
                             <div className="relative w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden group hover:border-primary-500 transition-colors">
@@ -175,7 +177,7 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
                                     />
                                 ) : (
                                     <div className="text-center text-gray-400 text-xs">
-                                        Upload Image
+                                        {t('categories.uploadImage')}
                                     </div>
                                 )}
                                 <input
@@ -186,15 +188,15 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
                                 />
                             </div>
                             <div className="text-xs text-gray-500">
-                                <p>Supported formats: JPG, PNG, WEBP</p>
-                                <p>Max size: 5MB</p>
+                                <p>{t('categories.supportedFormats')}</p>
+                                <p>{t('categories.maxSize')}</p>
                             </div>
                         </div>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Category Name
+                            {t('categories.categoryName')}
                         </label>
                         <input
                             type="text"
@@ -202,33 +204,33 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
-                            placeholder="Enter category name"
+                            placeholder={t('categories.categoryNamePlaceholder')}
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Description
+                            {t('categories.description')}
                         </label>
                         <textarea
                             rows={3}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all resize-none"
-                            placeholder="Category description..."
+                            placeholder={t('categories.descriptionPlaceholder')}
                         />
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Parent Category
+                            {t('categories.parent')}
                         </label>
                         <select
                             value={formData.parent}
                             onChange={(e) => setFormData({ ...formData, parent: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
                         >
-                            <option value="">No parent (Root category)</option>
+                            <option value="">{t('categories.noParent')}</option>
                             {flatCategories.map((item) => (
                                 <option key={item.id} value={item.id}>
                                     {'- '.repeat(item.level)}{item.name}
@@ -236,7 +238,7 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
                             ))}
                         </select>
                         <p className="text-xs text-gray-500 mt-1">
-                            Edit mode hides current category and descendants to avoid parent-child loops.
+                            {t('categories.editLoopWarning')}
                         </p>
                     </div>
 
@@ -246,7 +248,7 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
                             onClick={onClose}
                             className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors"
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
@@ -256,7 +258,7 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
                             {isPending && (
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             )}
-                            {mode === 'create' ? 'Create Category' : 'Update Category'}
+                            {mode === 'create' ? t('categories.createCategory') : t('categories.editCategory')}
                         </button>
                     </div>
                 </form>
