@@ -76,7 +76,7 @@ const ManualOrder = () => {
             return [...prev, {
                 productId: product.id,
                 name: product.name,
-                image: product.images[0],
+                image: (sku && sku.images && sku.images.length > 0) ? sku.images[0] : product.images[0],
                 price: sku ? sku.price : product.price,
                 stock: sku ? sku.stock : product.stock,
                 skuId: sku ? sku._id : null,
@@ -282,7 +282,7 @@ const ManualOrder = () => {
                                                             onClick={() => handleAddProduct(product, sku)}
                                                             className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-50 flex items-center gap-3"
                                                         >
-                                                            <img src={product.images[0]} alt="" className="w-10 h-10 rounded object-cover" />
+                                                            <img src={(sku.images && sku.images.length > 0) ? sku.images[0] : product.images[0]} alt="" className="w-10 h-10 rounded object-cover" />
                                                             <div className="flex-1">
                                                                 <div className="font-medium text-gray-900">{product.name}</div>
                                                                 <div className="text-sm text-gray-500 flex gap-2">
