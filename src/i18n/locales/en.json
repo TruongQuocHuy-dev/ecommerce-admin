@@ -267,6 +267,8 @@
         "subtitle": "Manage and track customer orders.",
         "searchPlaceholder": "Search orders...",
         "allStatus": "All Status",
+        "commandCenter": "Order Command Center",
+        "createOrder": "Create Order",
         "tableHeaders": {
             "orderId": "Order ID",
             "customer": "Customer",

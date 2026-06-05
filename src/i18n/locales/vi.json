@@ -288,6 +288,8 @@
         "subtitle": "Quản lý và theo dõi đơn hàng của khách hàng.",
         "searchPlaceholder": "Tìm đơn hàng...",
         "allStatus": "Tất cả trạng thái",
+        "commandCenter": "Trung tâm xử lý đơn hàng",
+        "createOrder": "Tạo đơn hàng",
         "tableHeaders": {
             "orderId": "Mã đơn",
             "customer": "Khách hàng",
