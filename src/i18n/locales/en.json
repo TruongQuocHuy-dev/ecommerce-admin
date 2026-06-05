@@ -72,6 +72,7 @@
         "ordersOverview": "Orders Overview"
     },
     "users": {
+        "commandCenter": "User Control Center",
         "title": "User Management",
         "subtitle": "Manage system users, roles, and permissions.",
         "addUser": "Add User",
@@ -341,5 +342,10 @@
             "percentage": "Percentage %",
             "freeship": "Free Shipping"
         }
+    },
+    "sellers": {
+        "commandCenter": "Partner Command Center",
+        "title": "Sellers & Shops",
+        "subtitle": "Manage shops, seller approvals, and statuses."
     }
 }

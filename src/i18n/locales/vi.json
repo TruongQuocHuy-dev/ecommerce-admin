@@ -93,6 +93,7 @@
         "ordersOverview": "Tổng quan đơn hàng"
     },
     "users": {
+        "commandCenter": "Trung tâm quản trị người dùng",
         "title": "Quản lý người dùng",
         "subtitle": "Quản lý người dùng hệ thống, vai trò và quyền hạn.",
         "addUser": "Thêm người dùng",
@@ -410,6 +411,7 @@
         "noDiscounts": "Chưa có mã giảm giá"
     },
     "sellers": {
+        "commandCenter": "Trung tâm quản lý đối tác",
         "title": "Người bán",
         "subtitle": "Quản lý cửa hàng và người bán"
     },

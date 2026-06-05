@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, MoreVertical, Edit, Trash2, Shield, Plus, ShoppingBag } from 'lucide-react'
+import { Search, MoreVertical, Edit, Trash2, Shield, Plus, ShoppingBag, Sparkles } from 'lucide-react'
 import { useUsers, useUpdateUser, useDeleteUser } from '../api/hooks/useUsers'
 import UserModal from '../components/users/UserModal'
 import useAuthStore from '../store/useAuthStore'
@@ -63,20 +63,32 @@ const Users = () => {
 
     return (
         <div className="space-y-6 animate-fade-in">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-slate-900">{t('users.title')}</h1>
-                    <p className="text-slate-600 mt-1">{t('users.subtitle')}</p>
+            {/* CommandCenter Header Banner */}
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 shadow-xl animate-fade-in">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.12),transparent_28%)] animate-pulse" />
+                <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="max-w-2xl">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-purple-200 backdrop-blur">
+                            {t('users.commandCenter')}
+                        </span>
+                        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl flex items-center gap-2">
+                            {t('users.title')}
+                            <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
+                        </h1>
+                        <p className="mt-2 max-w-xl text-sm text-slate-300 md:text-base">
+                            {t('users.subtitle')}
+                        </p>
+                    </div>
+                    {canManageUsers && (
+                        <button
+                            onClick={() => { setSelectedUser(null); setIsModalOpen(true) }}
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-purple-500/20 transition-transform hover:-translate-y-0.5 hover:bg-purple-50"
+                        >
+                            <Plus className="w-4 h-4" />
+                            {t('users.addUser')}
+                        </button>
+                    )}
                 </div>
-                {canManageUsers && (
-                    <button
-                        onClick={() => { setSelectedUser(null); setIsModalOpen(true) }}
-                        className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
-                    >
-                        <Plus className="w-5 h-5 mr-2" />
-                        {t('users.addUser')}
-                    </button>
-                )}
             </div>
 
             {/* Table and Filter Card */}
