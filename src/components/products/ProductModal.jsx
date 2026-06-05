@@ -409,7 +409,7 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
 
                                     <div className="col-span-2">
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            {t('products.form.category')}
+                                            {t('products.form.category')} *
                                         </label>
                                         <select
                                             required
@@ -434,6 +434,66 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                         </select>
                                         {validationErrors.category && (
                                             <p className="mt-1 text-xs text-red-600">{validationErrors.category}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Nhãn hiệu (Brand) *
+                                        </label>
+                                        <select
+                                            required
+                                            value={formData.brand}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, brand: e.target.value })
+                                                if (validationErrors.brand) {
+                                                    setValidationErrors((prev) => ({ ...prev, brand: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.brand ? 'border-red-400' : 'border-gray-300'
+                                            )}
+                                        >
+                                            <option value="">Chọn nhãn hiệu</option>
+                                            {brands.map((b) => (
+                                                <option key={b.id || b._id} value={b.id || b._id}>
+                                                    {b.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {validationErrors.brand && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.brand}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                            Nhà cung cấp (Supplier) *
+                                        </label>
+                                        <select
+                                            required
+                                            value={formData.supplier}
+                                            onChange={(e) => {
+                                                setFormData({ ...formData, supplier: e.target.value })
+                                                if (validationErrors.supplier) {
+                                                    setValidationErrors((prev) => ({ ...prev, supplier: undefined }))
+                                                }
+                                            }}
+                                            className={clsx(
+                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
+                                                validationErrors.supplier ? 'border-red-400' : 'border-gray-300'
+                                            )}
+                                        >
+                                            <option value="">Chọn nhà cung cấp</option>
+                                            {suppliers.map((s) => (
+                                                <option key={s.id || s._id} value={s.id || s._id}>
+                                                    {s.name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {validationErrors.supplier && (
+                                            <p className="mt-1 text-xs text-red-600">{validationErrors.supplier}</p>
                                         )}
                                     </div>
 
