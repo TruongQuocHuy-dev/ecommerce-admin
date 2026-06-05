@@ -1,6 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Plus, Edit, Trash2, FolderTree, ChevronDown, ChevronRight, Search, Layers3 } from 'lucide-react'
+import { 
+    Plus, 
+    Edit, 
+    Trash2, 
+    FolderTree, 
+    ChevronDown, 
+    ChevronRight, 
+    Search, 
+    Layers3,
+    ChevronLeft,
+    X,
+    Loader2
+} from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 import { useCategories, useDeleteCategory } from '../api/hooks/useCategories'
 import CategoryModal from '../components/categories/CategoryModal'
 import { PERMISSIONS, hasPermission } from '../utils/permissions'
@@ -108,6 +121,25 @@ const getPaginationItems = (current, total) => {
     }
 
     return [1, 'ellipsis-left', current - 1, current, current + 1, 'ellipsis-right', total]
+}
+
+// Helper for stable gradients
+const getAvatarGradient = (name) => {
+    const colors = [
+        'from-pink-500 to-rose-500',
+        'from-purple-500 to-indigo-500',
+        'from-blue-500 to-cyan-500',
+        'from-teal-500 to-emerald-500',
+        'from-emerald-500 to-green-500',
+        'from-amber-500 to-orange-500',
+        'from-orange-500 to-red-500',
+    ]
+    let hash = 0
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    const index = Math.abs(hash) % colors.length
+    return colors[index]
 }
 
 const Categories = () => {
@@ -239,7 +271,14 @@ const Categories = () => {
             : t('categories.deleteConfirm')
 
         if (confirm(message)) {
-            deleteCategory.mutate(getCategoryId(category))
+            deleteCategory.mutate(getCategoryId(category), {
+                onSuccess: () => {
+                    toast.success('Xóa danh mục thành công!')
+                },
+                onError: (err) => {
+                    toast.error(err.response?.data?.message || 'Lỗi khi xóa danh mục')
+                }
+            })
         }
     }
 
@@ -248,76 +287,96 @@ const Categories = () => {
         [currentPage, totalPages]
     )
 
-
-
     return (
         <main className="space-y-6 animate-fade-in">
-            <header className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-slate-900">{t('categories.title')}</h1>
-                {canManageCategories && (
-                    <button
-                        onClick={handleCreate}
-                        className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                    >
-                        <Plus className="w-4 h-4" />
-                        {t('categories.addCategory')}
-                    </button>
-                )}
-            </header>
+            {/* Header section with Stats */}
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 shadow-xl">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.15),transparent_35%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.12),transparent_35%)]" />
+                <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <p className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200 backdrop-blur">
+                            Product Structure
+                        </p>
+                        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">{t('categories.title')}</h1>
+                        <p className="mt-2 max-w-xl text-sm text-slate-300">Quản lý danh mục sản phẩm theo cây cha-con, có tìm kiếm và phân trang trong trang quản trị.</p>
+                    </div>
 
-            <section className="grid grid-cols-1 lg:grid-cols-3 gap-4" aria-label="Category statistics">
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">{t('categories.totalCategories')}</p>
-                    <p className="mt-2 text-3xl font-bold text-slate-900">{stats.total || 0}</p>
-                </div>
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">{t('categories.rootCategories')}</p>
-                    <p className="mt-2 text-3xl font-bold text-slate-900">{categoryTree.length || 0}</p>
-                </div>
-                <div className="bg-white rounded-xl border border-slate-200 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">{t('categories.treeDepth')}</p>
-                    <p className="mt-2 text-3xl font-bold text-slate-900">{stats.maxDepth || 0}</p>
-                </div>
-            </section>
-
-            <section className="bg-white rounded-xl border border-slate-200 p-4" aria-label="Category filter and paging controls">
-                <label htmlFor="category-search" className="text-sm font-medium text-slate-700">{t('categories.searchCategory')}</label>
-                <div className="mt-2 relative">
-                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                        id="category-search"
-                        value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
-                        placeholder={t('categories.searchPlaceholder')}
-                        className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
-                    />
-                </div>
-                <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <p className="text-sm text-slate-600">
-                        {t('categories.showingRootCategories', {
-                            start: totalRoots === 0 ? 0 : startRootIndex + 1,
-                            end: Math.min(endRootIndex, totalRoots),
-                            total: totalRoots
-                        })}
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <label htmlFor="page-size" className="text-sm text-slate-600">{t('categories.rowsPerPage')}</label>
-                        <select
-                            id="page-size"
-                            value={pageSize}
-                            onChange={(e) => setPageSize(Number(e.target.value))}
-                            className="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none"
-                        >
-                            <option value={5}>5</option>
-                            <option value={8}>8</option>
-                            <option value={12}>12</option>
-                            <option value={20}>20</option>
-                        </select>
+                    <div className="flex gap-4">
+                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 backdrop-blur min-w-[110px] transition-all hover:bg-white/10 text-center sm:text-left">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t('categories.totalCategories')}</p>
+                            <p className="mt-1 text-2xl font-bold text-white">{stats.total || 0}</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 backdrop-blur min-w-[110px] transition-all hover:bg-white/10 text-center sm:text-left">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t('categories.rootCategories')}</p>
+                            <p className="mt-1 text-2xl font-bold text-white">{categoryTree.length || 0}</p>
+                        </div>
+                        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3.5 backdrop-blur min-w-[110px] transition-all hover:bg-white/10 text-center sm:text-left">
+                            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{t('categories.treeDepth')}</p>
+                            <p className="mt-1 text-2xl font-bold text-white">{stats.maxDepth || 0}</p>
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <section className="bg-white rounded-xl border border-slate-200 overflow-hidden" aria-label="Category tree table">
+            {/* Controls Row */}
+            <div className="bg-white rounded-3xl border border-slate-200 p-4 shadow-sm space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    {/* Left: Search input + rows per page */}
+                    <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center w-full sm:w-auto">
+                        <div className="relative flex-1 sm:w-64">
+                            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                            <input
+                                id="category-search"
+                                type="text"
+                                placeholder={t('categories.searchPlaceholder')}
+                                value={keyword}
+                                onChange={(e) => setKeyword(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2.5 rounded-2xl border border-slate-200 bg-slate-50 outline-none transition focus:border-slate-400 focus:bg-white text-sm"
+                            />
+                            {keyword && (
+                                <button
+                                    onClick={() => setKeyword('')}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Page size select dropdown */}
+                        <div className="flex items-center gap-2 border border-slate-200 rounded-2xl bg-slate-50 px-3.5 py-2">
+                            <label htmlFor="page-size" className="text-xs font-semibold text-slate-500 whitespace-nowrap">
+                                {t('categories.rowsPerPage')}
+                            </label>
+                            <select
+                                id="page-size"
+                                value={pageSize}
+                                onChange={(e) => setPageSize(Number(e.target.value))}
+                                className="bg-transparent text-xs font-bold text-slate-800 outline-none cursor-pointer"
+                            >
+                                <option value={5}>5</option>
+                                <option value={8}>8</option>
+                                <option value={12}>12</option>
+                                <option value={20}>20</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Right: Plus Button */}
+                    {canManageCategories && (
+                        <button
+                            onClick={handleCreate}
+                            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-2xl transition-all shadow-md active:scale-95 self-stretch sm:self-auto"
+                        >
+                            <Plus className="w-4 h-4" />
+                            {t('categories.addCategory')}
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Tree list Table */}
+            <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
                 {isLoading ? (
                     <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <CategoryCardSkeleton />
@@ -326,151 +385,195 @@ const Categories = () => {
                         <CategoryCardSkeleton />
                     </div>
                 ) : treeRows.length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">{t('categories.noCategories')}</div>
+                    <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-3">
+                        <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center text-slate-400">
+                            <FolderTree className="w-6 h-6" />
+                        </div>
+                        <h4 className="font-semibold text-slate-900">Không tìm thấy danh mục nào</h4>
+                        <p className="text-sm text-slate-400 max-w-xs text-center">
+                            {categories.length === 0 ? t('categories.noCategories') : 'Thử tìm kiếm với tên hoặc từ khóa khác.'}
+                        </p>
+                    </div>
                 ) : (
                     <div>
-                        <div className="grid grid-cols-[1.8fr_1fr_auto] gap-4 px-4 py-3 border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-600">
+                        {/* Table Header */}
+                        <div className="grid grid-cols-[1.8fr_1fr_auto] gap-4 px-6 py-4 border-b border-slate-200 bg-slate-50/70 text-xs font-semibold uppercase tracking-wider text-slate-500">
                             <span>{t('categories.tableHeaders.name')}</span>
                             <span>{t('categories.tableHeaders.details')}</span>
-                            <span>{t('categories.tableHeaders.actions')}</span>
+                            <span className="text-right px-2">{t('categories.tableHeaders.actions')}</span>
                         </div>
 
-                        {treeRows.map(({ node: category, nodeId, level, hasChildren, childrenCount }) => {
-                            const isExpanded = expandedIds.has(nodeId)
+                        {/* Table Rows */}
+                        <div className="divide-y divide-slate-100">
+                            {treeRows.map(({ node: category, nodeId, level, hasChildren, childrenCount }) => {
+                                const isExpanded = expandedIds.has(nodeId)
 
-                            return (
-                                <div
-                                    key={nodeId}
-                                    className="grid grid-cols-[1.8fr_1fr_auto] gap-4 px-4 py-3 border-b border-slate-100 last:border-b-0 hover:bg-slate-50/70"
-                                >
-                                    <div className="min-w-0">
-                                        <div className="flex items-center gap-2" style={{ paddingLeft: `${level * 18}px` }}>
-                                            {hasChildren ? (
-                                                <button
-                                                    onClick={() => toggleExpand(nodeId)}
-                                                    className="p-1 rounded hover:bg-slate-200 text-slate-600"
-                                                    aria-label={isExpanded ? 'Collapse category' : 'Expand category'}
+                                return (
+                                    <div
+                                        key={nodeId}
+                                        className="grid grid-cols-[1.8fr_1fr_auto] gap-4 px-6 py-4 items-center hover:bg-slate-50/50 transition-colors group"
+                                    >
+                                        {/* Column 1: Name, Slug, Indentation & Expand/Collapse */}
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-3" style={{ paddingLeft: `${level * 20}px` }}>
+                                                {hasChildren ? (
+                                                    <button
+                                                        onClick={() => toggleExpand(nodeId)}
+                                                        className="p-1 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors"
+                                                        aria-label={isExpanded ? 'Collapse category' : 'Expand category'}
+                                                    >
+                                                        {isExpanded ? (
+                                                            <ChevronDown className="w-4 h-4 text-slate-700" />
+                                                        ) : (
+                                                            <ChevronRight className="w-4 h-4 text-slate-700" />
+                                                        )}
+                                                    </button>
+                                                ) : (
+                                                    <span className="w-6 shrink-0" />
+                                                )}
+
+                                                {/* Visual avatar folder wrapper */}
+                                                <div className={`w-9 h-9 rounded-2xl bg-gradient-to-tr ${getAvatarGradient(category.name)} flex items-center justify-center text-white font-bold shadow-sm shrink-0`}>
+                                                    <FolderTree className="w-4 h-4" />
+                                                </div>
+
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-slate-900 text-sm truncate">{category.name}</p>
+                                                    <p className="text-xs text-slate-400 truncate">/{category.slug}</p>
+                                                </div>
+
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 shrink-0">
+                                                    {t('categories.level', { level: level + 1 })}
+                                                </span>
+                                            </div>
+
+                                            {category.description && (
+                                                <p 
+                                                    className="mt-2 text-xs text-slate-500 line-clamp-1" 
+                                                    style={{ paddingLeft: `${level * 20 + (hasChildren ? 68 : 60)}px` }}
                                                 >
-                                                    {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                                                </button>
-                                            ) : (
-                                                <span className="w-6" />
+                                                    {category.description}
+                                                </p>
                                             )}
-
-                                            <div className="w-8 h-8 bg-primary-50 rounded-lg flex items-center justify-center shrink-0">
-                                                <FolderTree className="w-4 h-4 text-primary-600" />
-                                            </div>
-
-                                            <div className="min-w-0">
-                                                <p className="font-semibold text-slate-900 truncate">{category.name}</p>
-                                                <p className="text-xs text-slate-500 truncate">/{category.slug}</p>
-                                            </div>
-
-                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] bg-slate-100 text-slate-700 shrink-0">
-                                                <Layers3 className="w-3 h-3" />
-                                                {t('categories.level', { level: level + 1 })}
-                                            </span>
                                         </div>
 
-                                        {category.description && (
-                                            <p className="mt-2 text-sm text-slate-600 line-clamp-1" style={{ paddingLeft: `${level * 18 + 38}px` }}>
-                                                {category.description}
+                                        {/* Column 2: Parent information & children counts */}
+                                        <div className="text-xs">
+                                            <p className="text-slate-700 font-semibold truncate">
+                                                {category.parent?.name ? (
+                                                    <span>Cha: <span className="text-slate-900">{category.parent.name}</span></span>
+                                                ) : (
+                                                    <span className="text-slate-500 italic">{t('categories.rootCategory')}</span>
+                                                )}
                                             </p>
-                                        )}
-                                    </div>
+                                            <p className="text-[10px] text-slate-400 mt-1">
+                                                {hasChildren ? (
+                                                    t('categories.directSubcategories', { count: childrenCount })
+                                                ) : (
+                                                    t('categories.noSubcategories')
+                                                )}
+                                            </p>
+                                        </div>
 
-                                    <div>
-                                        <p className="text-sm text-slate-700">
-                                            {category.parent?.name ? `${t('categories.parent')}: ${category.parent.name}` : t('categories.rootCategory')}
-                                        </p>
-                                        <p className="text-xs text-slate-500 mt-1">
-                                            {hasChildren ? t('categories.directSubcategories', { count: childrenCount }) : t('categories.noSubcategories')}
-                                        </p>
+                                        {/* Column 3: Actions */}
+                                        <div className="flex items-center gap-1.5 justify-end">
+                                            <button
+                                                onClick={() => handleEdit(category)}
+                                                className="p-2 hover:bg-slate-100 rounded-xl text-slate-600 hover:text-slate-900 transition-colors"
+                                                disabled={!canManageCategories}
+                                                title={canManageCategories ? t('categories.editTooltip') : t('categories.noPermission')}
+                                            >
+                                                <Edit className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(category)}
+                                                className="p-2 hover:bg-rose-50 rounded-xl text-rose-600 hover:text-rose-700 transition-colors"
+                                                disabled={!canManageCategories || deleteCategory.isPending}
+                                                title={canManageCategories ? t('categories.deleteTooltip') : t('categories.noPermission')}
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
+                                )
+                            })}
+                        </div>
 
-                                    <div className="flex items-center gap-1 justify-end">
-                                        <button
-                                            onClick={() => handleEdit(category)}
-                                            className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-900 transition-colors"
-                                            disabled={!canManageCategories}
-                                            title={canManageCategories ? t('categories.editTooltip') : t('categories.noPermission')}
-                                        >
-                                            <Edit className="w-4 h-4" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(category)}
-                                            className="p-2 hover:bg-red-50 rounded-lg text-red-500"
-                                            disabled={!canManageCategories || deleteCategory.isPending}
-                                            title={canManageCategories ? t('categories.deleteTooltip') : t('categories.noPermission')}
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
+                        {/* Pagination Controls */}
+                        {!isLoading && totalPages > 1 && (
+                            <div className="flex flex-col sm:flex-row items-center justify-between border-t border-slate-150 bg-slate-50/40 px-6 py-4 gap-4 rounded-b-3xl">
+                                <p className="text-xs text-slate-500">
+                                    {t('categories.showingRootCategories', {
+                                        start: totalRoots === 0 ? 0 : startRootIndex + 1,
+                                        end: Math.min(endRootIndex, totalRoots),
+                                        total: totalRoots
+                                    })}
+                                </p>
+                                <div className="flex items-center gap-1.5">
+                                    {/* Go to First Page */}
+                                    <button
+                                        onClick={() => setCurrentPage(1)}
+                                        disabled={currentPage === 1}
+                                        className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors bg-white text-xs font-semibold"
+                                    >
+                                        {t('categories.pagination.first')}
+                                    </button>
+                                    
+                                    {/* Go to Previous Page */}
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                        disabled={currentPage === 1}
+                                        className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors bg-white"
+                                    >
+                                        <ChevronLeft className="w-4 h-4" />
+                                    </button>
+                                    
+                                    {paginationItems.map((item, index) => {
+                                        if (typeof item !== 'number') {
+                                            return <span key={`${item}-${index}`} className="px-1 text-slate-500 text-xs">...</span>
+                                        }
 
+                                        const pageNumber = item
+                                        const isActive = currentPage === pageNumber
+
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                onClick={() => setCurrentPage(pageNumber)}
+                                                className={`w-9 h-9 text-xs font-semibold rounded-xl border transition-all ${
+                                                    isActive
+                                                        ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                                                        : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-600'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        )
+                                    })}
+
+                                    {/* Go to Next Page */}
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors bg-white"
+                                    >
+                                        <ChevronRight className="w-4 h-4" />
+                                    </button>
+
+                                    {/* Go to Last Page */}
+                                    <button
+                                        onClick={() => setCurrentPage(totalPages)}
+                                        disabled={currentPage === totalPages}
+                                        className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed transition-colors bg-white text-xs font-semibold"
+                                    >
+                                        {t('categories.pagination.last')}
+                                    </button>
                                 </div>
-                            )
-                        })}
+                            </div>
+                        )}
                     </div>
                 )}
-            </section>
-
-            {!isLoading && totalPages > 1 && (
-                <nav className="flex items-center justify-between" aria-label="Category pagination">
-                    <p className="text-sm text-slate-600">{t('categories.pagination.pageInfo', { current: currentPage, total: totalPages })}</p>
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setCurrentPage(1)}
-                            disabled={currentPage === 1}
-                            className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {t('categories.pagination.first')}
-                        </button>
-                        <button
-                            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                            disabled={currentPage === 1}
-                            className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {t('categories.pagination.previous')}
-                        </button>
-                        {paginationItems.map((item, index) => {
-                            if (typeof item !== 'number') {
-                                return <span key={`${item}-${index}`} className="px-1 text-slate-500">...</span>
-                            }
-
-                            const pageNumber = item
-                            const isActive = currentPage === pageNumber
-
-                            return (
-                                <button
-                                    key={pageNumber}
-                                    onClick={() => setCurrentPage(pageNumber)}
-                                    aria-current={isActive ? 'page' : undefined}
-                                    className={`px-3 py-2 text-sm rounded-lg border ${isActive
-                                        ? 'bg-primary-600 text-white border-primary-600'
-                                        : 'border-slate-300 hover:bg-slate-50 text-slate-700'
-                                        }`}
-                                >
-                                    {pageNumber}
-                                </button>
-                            )
-                        })}
-                        <button
-                            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                            disabled={currentPage === totalPages}
-                            className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {t('categories.pagination.next')}
-                        </button>
-                        <button
-                            onClick={() => setCurrentPage(totalPages)}
-                            disabled={currentPage === totalPages}
-                            className="px-3 py-2 text-sm border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {t('categories.pagination.last')}
-                        </button>
-                    </div>
-                </nav>
-            ) }
+            </div>
 
             <CategoryModal
                 isOpen={isModalOpen}

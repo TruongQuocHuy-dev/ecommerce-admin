@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { X } from 'lucide-react'
+import toast from 'react-hot-toast'
 import { useCategories, useCreateCategory, useUpdateCategory } from '../../api/hooks/useCategories'
 import { useTranslation } from '../../i18n/index.jsx'
 
@@ -122,12 +123,24 @@ const CategoryModal = ({ isOpen, onClose, category, mode = 'create' }) => {
 
         if (mode === 'create') {
             createCategory.mutate(data, {
-                onSuccess: () => onClose()
+                onSuccess: () => {
+                    toast.success('Tạo danh mục mới thành công!')
+                    onClose()
+                },
+                onError: (err) => {
+                    toast.error(err.response?.data?.message || 'Lỗi khi tạo danh mục')
+                }
             })
         } else {
             const id = category.id || category._id
             updateCategory.mutate({ id, data }, {
-                onSuccess: () => onClose()
+                onSuccess: () => {
+                    toast.success('Cập nhật danh mục thành công!')
+                    onClose()
+                },
+                onError: (err) => {
+                    toast.error(err.response?.data?.message || 'Lỗi khi cập nhật danh mục')
+                }
             })
         }
     }
