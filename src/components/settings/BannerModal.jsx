@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
+import { X, Upload, Check } from 'lucide-react'
 import { useCreateBanner, useUpdateBanner } from '../../api/hooks/useBanners'
+import { useTranslation } from '../../i18n/index.jsx'
+import clsx from 'clsx'
 
 const BannerModal = ({ isOpen, onClose, banner, mode = 'create' }) => {
+    const { t } = useTranslation()
     const [imageFile, setImageFile] = useState(null)
     const [imagePreview, setImagePreview] = useState(null)
     const [formData, setFormData] = useState({
@@ -22,7 +25,6 @@ const BannerModal = ({ isOpen, onClose, banner, mode = 'create' }) => {
                 isActive: banner.isActive !== false,
             })
             if (banner.image) {
-                // Determine if absolute or relative path
                 const imageUrl = banner.image.startsWith('http')
                     ? banner.image
                     : `${import.meta.env.VITE_API_BASE_URL.replace('/api/v1', '')}/${banner.image.replace(/\\/g, '/')}`;
@@ -76,37 +78,55 @@ const BannerModal = ({ isOpen, onClose, banner, mode = 'create' }) => {
     if (!isOpen) return null
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-                <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
-                    <h2 className="text-xl font-bold text-gray-900">
-                        {mode === 'create' ? 'Add New Banner' : 'Edit Banner'}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-fade-in px-4">
+            <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col border border-slate-200 animate-scale-in">
+                
+                {/* Modal Header */}
+                <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-white shrink-0">
+                    <h2 className="text-lg font-bold text-slate-900">
+                        {mode === 'create' ? t('banners.addBanner') : t('banners.editBanner')}
                     </h2>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="p-1.5 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                        <X className="w-5 h-5 text-gray-500" />
+                        <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-6 space-y-6">
-                    {/* Image Upload */}
+                {/* Modal Body */}
+                <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+                    
+                    {/* Image Upload Area */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Banner Image *
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                            Hình ảnh Banner *
                         </label>
-                        <div className="flex flex-col gap-4">
-                            <div className="relative w-full h-40 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden group hover:border-primary-500 transition-colors bg-gray-50">
+                        <div className="flex flex-col gap-3">
+                            <div className="relative w-full aspect-[2/1] border-2 border-dashed border-slate-200 rounded-2xl flex items-center justify-center overflow-hidden group hover:border-indigo-500 transition-all bg-slate-50 cursor-pointer shadow-inner">
                                 {imagePreview ? (
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="w-full h-full object-cover"
-                                    />
+                                    <>
+                                        <img
+                                            src={imagePreview}
+                                            alt="Preview"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-2">
+                                            <Upload className="w-4.5 h-4.5" />
+                                            Thay đổi hình ảnh
+                                        </div>
+                                    </>
                                 ) : (
-                                    <div className="text-center text-gray-400 text-sm">
-                                        Click to Upload Image
+                                    <div className="text-center p-6 space-y-2">
+                                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm border border-slate-100 mx-auto text-slate-400 group-hover:text-indigo-500 group-hover:scale-105 transition-all">
+                                            <Upload className="w-5 h-5 stroke-[1.5]" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold text-slate-700">{t('banners.uploadImage')}</p>
+                                            <p className="text-[10px] text-slate-400 mt-1 max-w-[240px] leading-relaxed mx-auto">
+                                                Click để chọn tệp tin hình ảnh từ thiết bị của bạn
+                                            </p>
+                                        </div>
                                     </div>
                                 )}
                                 <input
@@ -116,68 +136,79 @@ const BannerModal = ({ isOpen, onClose, banner, mode = 'create' }) => {
                                     className="absolute inset-0 opacity-0 cursor-pointer"
                                 />
                             </div>
-                            <div className="text-xs text-gray-500">
-                                <p>Recommended size: 1200x600px | Supported: JPG, PNG, WEBP | Max: 5MB</p>
+                            <div className="text-[11px] text-slate-400 leading-normal">
+                                {t('banners.uploadImageHelp')}
                             </div>
                         </div>
                     </div>
 
+                    {/* Banner Title */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Title
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                            {t('banners.titleLabel')}
                         </label>
                         <input
                             type="text"
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
-                            placeholder="e.g., Summer Sale (Optional)"
+                            className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+                            placeholder={t('banners.titlePlaceholder')}
                         />
                     </div>
 
+                    {/* Banner Link */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Link / URL
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                            {t('banners.linkLabel')}
                         </label>
                         <input
                             type="text"
                             value={formData.link}
                             onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all"
-                            placeholder="e.g., https://example.com/sale (Optional)"
+                            className="w-full px-4 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all placeholder:text-slate-400"
+                            placeholder={t('banners.linkPlaceholder')}
                         />
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <input
-                            type="checkbox"
-                            id="isActive"
-                            checked={formData.isActive}
-                            onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                            className="w-5 h-5 text-primary-600 rounded focus:ring-primary-500"
-                        />
-                        <label htmlFor="isActive" className="text-sm font-medium text-gray-700 cursor-pointer">
-                            Active (Visible on App)
-                        </label>
+                    {/* Banner Status Switch */}
+                    <div className="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <div>
+                            <p className="text-sm font-bold text-slate-800">Trạng thái hiển thị</p>
+                            <p className="text-xs text-slate-400 mt-0.5">Hiển thị hoặc ẩn banner này trên ứng dụng di động</p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
+                            className={clsx(
+                                "w-12 h-6 rounded-full transition-colors relative outline-none",
+                                formData.isActive ? "bg-green-500" : "bg-slate-300"
+                            )}
+                        >
+                            <div className={clsx(
+                                "w-5 h-5 bg-white rounded-full absolute top-0.5 shadow transition-all",
+                                formData.isActive ? "left-[26px]" : "left-0.5"
+                            )} />
+                        </button>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    {/* Actions Panel */}
+                    <div className="flex justify-end gap-3 pt-6 border-t border-slate-100 shrink-0">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+                            className="px-4.5 py-2.5 text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
                         >
-                            Cancel
+                            {t('common.cancel')}
                         </button>
                         <button
                             type="submit"
                             disabled={isPending || (!imageFile && mode === 'create')}
-                            className="px-4 py-2 text-white bg-primary-600 rounded-lg hover:bg-primary-700 font-medium transition-colors disabled:opacity-50 flex items-center gap-2"
+                            className="px-5 py-2.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shadow-sm shadow-slate-950/10"
                         >
                             {isPending && (
-                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             )}
-                            {mode === 'create' ? 'Create Banner' : 'Update Banner'}
+                            {mode === 'create' ? t('banners.addBanner') : t('banners.editBanner')}
                         </button>
                     </div>
                 </form>

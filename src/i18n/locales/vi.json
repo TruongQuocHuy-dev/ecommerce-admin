@@ -59,6 +59,24 @@
         "security": "Bảo mật",
         "notifications": "Thông báo"
     },
+    "banners": {
+        "commandCenter": "Trung tâm quản trị banner",
+        "title": "Quản lý Banner quảng cáo",
+        "subtitle": "Quản lý hình ảnh và liên kết banner hiển thị trên ứng dụng di động",
+        "addBanner": "Thêm Banner mới",
+        "editBanner": "Cập nhật Banner",
+        "noBanners": "Chưa có banner nào được tạo. Hãy thêm mới để bắt đầu hiển thị trên ứng dụng.",
+        "active": "Hoạt động",
+        "inactive": "Tạm ẩn",
+        "confirmDelete": "Xóa banner này? Thao tác không thể hoàn tác.",
+        "uploadImage": "Tải hình ảnh lên",
+        "uploadImageHelp": "Khuyên dùng kích thước: 1200x600px | Định dạng: JPG, PNG, WEBP | Tối đa: 5MB",
+        "titleLabel": "Tiêu đề banner",
+        "titlePlaceholder": "Nhập tiêu đề (ví dụ: Chương trình khuyến mãi hè)",
+        "linkLabel": "Liên kết / URL",
+        "linkPlaceholder": "Nhập liên kết (ví dụ: https://example.com/khuyen-mai)",
+        "activeLabel": "Trạng thái hoạt động (Hiển thị trên ứng dụng)"
+    },
     "sidebar": {
         "dashboard": "Tổng quan",
         "users": "Người dùng",

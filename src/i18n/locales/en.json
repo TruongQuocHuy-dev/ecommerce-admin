@@ -362,6 +362,24 @@
         "title": "System Settings",
         "subtitle": "Manage general settings, social links, and system configurations"
     },
+    "banners": {
+        "commandCenter": "Banner Control Center",
+        "title": "Banner Management",
+        "subtitle": "Manage visual banners and redirect links displayed in the mobile application",
+        "addBanner": "Add New Banner",
+        "editBanner": "Edit Banner",
+        "noBanners": "No banners found. Create one to start displaying in the application.",
+        "active": "Active",
+        "inactive": "Inactive",
+        "confirmDelete": "Are you sure you want to delete this banner? This action cannot be undone.",
+        "uploadImage": "Upload Image",
+        "uploadImageHelp": "Recommended: 1200x600px | Formats: JPG, PNG, WEBP | Max: 5MB",
+        "titleLabel": "Banner Title",
+        "titlePlaceholder": "Enter banner title (e.g., Summer Promotion)",
+        "linkLabel": "Redirect Link / URL",
+        "linkPlaceholder": "Enter redirect link (e.g., https://example.com/promo)",
+        "activeLabel": "Active Status (Visible on App)"
+    },
     "reviews": {
         "commandCenter": "Review Command Center",
         "title": "Reviews & Ratings",
