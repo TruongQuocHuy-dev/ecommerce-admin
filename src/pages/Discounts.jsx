@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Edit, Trash2, Ticket, Calendar, Search, CheckCircle, XCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Plus, Edit, Trash2, Ticket, Calendar, Search, CheckCircle, XCircle, Clock, AlertTriangle, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../api/client';
 import { useTranslation } from '../i18n/index.jsx';
@@ -115,10 +115,33 @@ const Discounts = () => {
 
     return (
         <div className="space-y-6 animate-fade-in">
-            {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-slate-900">{t('discounts.title')}</h1>
-                <p className="text-slate-600 mt-1">{t('discounts.subtitle')}</p>
+            {/* CommandCenter Header Banner */}
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 shadow-xl animate-fade-in">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(6,182,212,0.12),transparent_28%)] animate-pulse" />
+                <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="max-w-2xl">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-purple-200 backdrop-blur">
+                            {t('discounts.commandCenter')}
+                        </span>
+                        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl flex items-center gap-2">
+                            {t('discounts.title')}
+                            <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
+                        </h1>
+                        <p className="mt-2 max-w-xl text-sm text-slate-300 md:text-base">
+                            {t('discounts.subtitle')}
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => {
+                            setEditingDiscount(null);
+                            setModalOpen(true);
+                        }}
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 shadow-lg shadow-purple-500/20 transition-transform hover:-translate-y-0.5 hover:bg-purple-50"
+                    >
+                        <Plus className="w-4 h-4" />
+                        {t('discounts.addDiscount')}
+                    </button>
+                </div>
             </div>
 
             {/* Filters */}
@@ -157,18 +180,6 @@ const Discounts = () => {
                     <option value="inactive">{t('discounts.status.inactive')}</option>
                     <option value="expired">{t('discounts.status.expired')}</option>
                 </select>
-
-                {/* Add Button */}
-                <button
-                    onClick={() => {
-                        setEditingDiscount(null);
-                        setModalOpen(true);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white rounded-lg transition-all shadow-lg shadow-primary-500/20"
-                >
-                    <Plus className="w-4 h-4" />
-                    {t('discounts.addDiscount')}
-                </button>
             </div>
 
             {/* Discounts Table */}

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
     Shield, Search, Filter, Calendar, User, FileText, AlertCircle,
-    CheckCircle, XCircle, Eye, Trash2, Edit2, Plus, Loader2,
+    CheckCircle, XCircle, Eye, Trash2, Edit2, Plus, Loader2, Sparkles
 } from 'lucide-react';
 import api from '../api/client';
 import { useTranslation } from '../i18n/index.jsx';
@@ -54,15 +54,23 @@ const AuditLogs = () => {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
-                    <Shield className="w-8 h-8 text-primary-600" />
-                    {t('auditLogs.title') || 'Nhật Ký Hoạt Động'}
-                </h1>
-                <p className="text-slate-500 mt-1">
-                    {t('auditLogs.subtitle') || 'Theo dõi tất cả các hành động của quản trị viên và người bán'}
-                </p>
+            {/* CommandCenter Header Banner */}
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 shadow-xl animate-fade-in">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(99,102,241,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(56,189,248,0.12),transparent_28%)] animate-pulse" />
+                <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="max-w-2xl">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-200 backdrop-blur">
+                            {t('auditLogs.commandCenter')}
+                        </span>
+                        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl flex items-center gap-2">
+                            {t('auditLogs.title')}
+                            <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
+                        </h1>
+                        <p className="mt-2 max-w-xl text-sm text-slate-300 md:text-base">
+                            {t('auditLogs.subtitle')}
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {/* Filters */}

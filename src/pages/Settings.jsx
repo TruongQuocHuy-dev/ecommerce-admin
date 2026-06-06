@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     Settings as SettingsIcon, Globe, Truck, Image, Save, Plus, Trash2, Edit2,
-    Eye, EyeOff, GripVertical, Loader2, X, Upload
+    Eye, EyeOff, GripVertical, Loader2, X, Upload, Sparkles
 } from 'lucide-react';
 import api from '../api/client';
 import { useTranslation } from '../i18n/index.jsx';
@@ -20,14 +20,23 @@ const Settings = () => {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-slate-900">
-                    {t('settings.title') || 'Cài đặt hệ thống'}
-                </h1>
-                <p className="text-slate-500 mt-1">
-                    {t('settings.subtitle') || 'Quản lý cấu hình chung, phí vận chuyển và banner quảng cáo'}
-                </p>
+            {/* CommandCenter Header Banner */}
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 shadow-xl animate-fade-in">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(6,182,212,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.12),transparent_28%)] animate-pulse" />
+                <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="max-w-2xl">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200 backdrop-blur">
+                            {t('settings.commandCenter')}
+                        </span>
+                        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl flex items-center gap-2">
+                            {t('settings.title')}
+                            <Sparkles className="w-5 h-5 text-cyan-400 animate-pulse" />
+                        </h1>
+                        <p className="mt-2 max-w-xl text-sm text-slate-300 md:text-base">
+                            {t('settings.subtitle')}
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {/* Tabs */}

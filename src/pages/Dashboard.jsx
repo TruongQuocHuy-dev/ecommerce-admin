@@ -20,7 +20,8 @@ import {
     RefreshCw,
     AlertCircle,
     ShieldAlert,
-    Settings
+    Settings,
+    Sparkles
 } from 'lucide-react'
 import {
     AreaChart,
@@ -260,12 +261,23 @@ const Dashboard = () => {
         <>
             <a href="#dashboard-title" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:bg-white focus:px-3 focus:py-2 focus:rounded-md focus:shadow">{t('skipToContent') || 'Skip to content'}</a>
             <main role="main" aria-labelledby="dashboard-title" className="space-y-6 animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Header */}
-            <div>
-                <h1 id="dashboard-title" className="text-3xl font-bold text-slate-900">{t('dashboard.title')}</h1>
-                <p className="text-slate-600 mt-1">
-                    {t('dashboard.welcome', { name: user?.name })}. {t('dashboard.subtitle')}
-                </p>
+            {/* CommandCenter Header Banner */}
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 shadow-xl animate-fade-in">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(6,182,212,0.12),transparent_28%)] animate-pulse" />
+                <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="max-w-2xl">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-purple-200 backdrop-blur">
+                            {t('dashboard.commandCenter')}
+                        </span>
+                        <h1 id="dashboard-title" className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl flex items-center gap-2">
+                            {t('dashboard.title')}
+                            <Sparkles className="w-5 h-5 text-purple-400 animate-pulse" />
+                        </h1>
+                        <p className="mt-2 max-w-xl text-sm text-slate-300 md:text-base">
+                            {t('dashboard.welcome', { name: user?.name })}. {t('dashboard.subtitle')}
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {/* Maintenance Warning */}

@@ -56,6 +56,7 @@
         "logout": "Logout"
     },
     "dashboard": {
+        "commandCenter": "System Operations Dashboard",
         "title": "Dashboard Overview",
         "welcome": "Welcome back, {{name}}",
         "subtitle": "Here's what's happening today.",
@@ -337,6 +338,9 @@
         "loginError": "Invalid email or password"
     },
     "discounts": {
+        "commandCenter": "Discounts Command Center",
+        "title": "Discount Coupons",
+        "subtitle": "Manage promo codes and discount campaigns",
         "types": {
             "fixed": "Fixed Amount",
             "percentage": "Percentage %",
@@ -347,5 +351,25 @@
         "commandCenter": "Partner Command Center",
         "title": "Sellers & Shops",
         "subtitle": "Manage shops, seller approvals, and statuses."
+    },
+    "reports": {
+        "commandCenter": "Analytics Command Center",
+        "title": "Reports & Analytics",
+        "subtitle": "Review shop metrics, revenue trends, and operational statistics"
+    },
+    "settings": {
+        "commandCenter": "System Config Center",
+        "title": "System Settings",
+        "subtitle": "Manage general settings, social links, and system configurations"
+    },
+    "reviews": {
+        "commandCenter": "Review Command Center",
+        "title": "Reviews & Ratings",
+        "subtitle": "Moderate, approve, or reject product ratings and customer feedback"
+    },
+    "auditLogs": {
+        "commandCenter": "Audit Command Center",
+        "title": "System Audit Logs",
+        "subtitle": "Track and monitor administrative actions and system updates in real-time"
     }
 }

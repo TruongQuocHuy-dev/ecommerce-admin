@@ -4,7 +4,7 @@ import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
     AreaChart, Area, PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
-import { Calendar, DollarSign, ShoppingBag, Users, TrendingUp, TrendingDown, Package, AlertCircle } from 'lucide-react';
+import { Calendar, DollarSign, ShoppingBag, Users, TrendingUp, TrendingDown, Package, AlertCircle, Sparkles } from 'lucide-react';
 import api from '../api/client';
 import { useTranslation } from '../i18n/index.jsx';
 import clsx from 'clsx';
@@ -222,32 +222,43 @@ const Reports = () => {
     );
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-slate-900">{t('sidebar.reports') || 'Báo cáo & Thống kê'}</h1>
-                    <p className="text-slate-500 mt-1">{t('reports.subtitle') || 'Tổng quan về hiệu quả kinh doanh của cửa hàng'}</p>
-                </div>
-
-                <div className="flex bg-white p-1 rounded-xl shadow-sm border border-slate-200">
-                    {[
-                        { id: 'last7days', label: t('reports.last7days') || '7 ngày qua' },
-                        { id: 'last30days', label: t('reports.last30days') || '30 ngày qua' },
-                        { id: 'thisMonth', label: t('reports.thisMonth') || 'Tháng này' },
-                    ].map((p) => (
-                        <button
-                            key={p.id}
-                            onClick={() => setPeriod(p.id)}
-                            className={clsx(
-                                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                                period === p.id
-                                    ? "bg-primary-50 text-primary-700 shadow-sm"
-                                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                            )}
-                        >
-                            {p.label}
-                        </button>
-                    ))}
+        <div className="space-y-6 animate-fade-in">
+            {/* CommandCenter Header Banner */}
+            <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-6 py-6 shadow-xl">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(6,182,212,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(99,102,241,0.12),transparent_28%)] animate-pulse" />
+                <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+                    <div className="max-w-2xl">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200 backdrop-blur">
+                            {t('reports.commandCenter')}
+                        </span>
+                        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white md:text-4xl flex items-center gap-2">
+                            {t('reports.title')}
+                            <Sparkles className="w-5 h-5 text-cyan-400 animate-pulse" />
+                        </h1>
+                        <p className="mt-2 max-w-xl text-sm text-slate-300 md:text-base">
+                            {t('reports.subtitle')}
+                        </p>
+                    </div>
+                    <div className="flex bg-white/10 p-1 rounded-2xl border border-white/10 backdrop-blur self-start lg:self-end">
+                        {[
+                            { id: 'last7days', label: t('reports.last7days') || '7 ngày qua' },
+                            { id: 'last30days', label: t('reports.last30days') || '30 ngày qua' },
+                            { id: 'thisMonth', label: t('reports.thisMonth') || 'Tháng này' },
+                        ].map((p) => (
+                            <button
+                                key={p.id}
+                                onClick={() => setPeriod(p.id)}
+                                className={clsx(
+                                    "px-4 py-2 rounded-xl text-xs font-bold transition-all border border-transparent",
+                                    period === p.id
+                                        ? "bg-white text-slate-900 shadow"
+                                        : "text-slate-300 hover:text-white hover:bg-white/5"
+                                )}
+                            >
+                                {p.label}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 

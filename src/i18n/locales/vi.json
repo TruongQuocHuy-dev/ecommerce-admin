@@ -37,6 +37,8 @@
         "page": "Trang"
     },
     "reports": {
+        "commandCenter": "Trung tâm phân tích báo cáo",
+        "title": "Báo cáo & Thống kê",
         "overview": "Tổng quan",
         "revenue": "Doanh thu",
         "revenueOverTime": "Biểu đồ doanh thu",
@@ -48,6 +50,7 @@
         "thisMonth": "Tháng này"
     },
     "settings": {
+        "commandCenter": "Trung tâm cấu hình hệ thống",
         "title": "Cài đặt hệ thống",
         "subtitle": "Quản lý cấu hình chung, phí vận chuyển và banner quảng cáo",
         "general": "Cài đặt chung",
@@ -77,6 +80,7 @@
         "logout": "Đăng xuất"
     },
     "dashboard": {
+        "commandCenter": "Trung tâm điều hành hệ thống",
         "title": "Tổng quan",
         "welcome": "Chào mừng trở lại, {{name}}",
         "subtitle": "Đây là những gì đang diễn ra hôm nay.",
@@ -358,6 +362,7 @@
         "loginError": "Email hoặc mật khẩu không đúng"
     },
     "discounts": {
+        "commandCenter": "Trung tâm quản lý khuyến mãi",
         "title": "Mã giảm giá",
         "subtitle": "Quản lý mã khuyến mãi và chương trình giảm giá",
         "addDiscount": "Tạo mã mới",
@@ -414,6 +419,16 @@
         "commandCenter": "Trung tâm quản lý đối tác",
         "title": "Người bán",
         "subtitle": "Quản lý cửa hàng và người bán"
+    },
+    "reviews": {
+        "commandCenter": "Trung tâm kiểm duyệt đánh giá",
+        "title": "Quản lý đánh giá",
+        "subtitle": "Kiểm duyệt và quản lý đánh giá sản phẩm từ người dùng"
+    },
+    "auditLogs": {
+        "commandCenter": "Trung tâm kiểm toán hệ thống",
+        "title": "Nhật ký hoạt động",
+        "subtitle": "Theo dõi và giám sát chi tiết các hành động của quản trị viên và người bán"
     },
     "language": {
         "vietnamese": "Tiếng Việt",
