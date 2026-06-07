@@ -341,11 +341,80 @@
         "commandCenter": "Discounts Command Center",
         "title": "Discount Coupons",
         "subtitle": "Manage promo codes and discount campaigns",
+        "addDiscount": "Create Coupon",
+        "searchPlaceholder": "Search code or name...",
+        "allTypes": "All Types",
+        "allStatus": "All Statuses",
+        "allScopes": "All Scopes",
+        "scopeSystem": "System",
+        "scopeShop": "Seller Shop",
+        "sellerName": "Seller / Shop",
+        "createdBy": "Created By",
+        "usageHistory": "View Usage History",
+        "tableHeaders": {
+            "code": "Code",
+            "name": "Name",
+            "type": "Type",
+            "value": "Value",
+            "scope": "Scope",
+            "usage": "Usage",
+            "validUntil": "Valid Until",
+            "status": "Status",
+            "actions": "Actions"
+        },
         "types": {
             "fixed": "Fixed Amount",
             "percentage": "Percentage %",
             "freeship": "Free Shipping"
-        }
+        },
+        "status": {
+            "active": "Active",
+            "inactive": "Suspended",
+            "expired": "Expired"
+        },
+        "modal": {
+            "add": "Create Discount Coupon",
+            "edit": "Edit Discount Coupon",
+            "code": "Coupon Code",
+            "codePlaceholder": "e.g. SAVE20",
+            "name": "Campaign Name",
+            "description": "Description",
+            "discountType": "Discount Type",
+            "discountValue": "Discount Value",
+            "minOrder": "Min Order Value",
+            "maxDiscount": "Max Discount Cap",
+            "usageLimit": "Total Usage Limit",
+            "usagePerUser": "Limit per User",
+            "startDate": "Start Date",
+            "endDate": "End Date",
+            "active": "Activate immediately",
+            "scope": "Target Scope",
+            "selectScope": "Select scope",
+            "selectShop": "Select Seller / Shop",
+            "shopLabel": "Applied Shop"
+        },
+        "usageModal": {
+            "title": "Usage History for {{code}}",
+            "customer": "Customer",
+            "order": "Order ID",
+            "amount": "Savings",
+            "date": "Used At",
+            "noUsage": "This coupon has not been used yet."
+        },
+        "stats": {
+            "total": "Total Coupons",
+            "system": "System Vouchers",
+            "seller": "Seller Vouchers",
+            "active": "Active Coupons"
+        },
+        "toast": {
+            "created": "Coupon created successfully",
+            "updated": "Coupon updated successfully",
+            "deleted": "Coupon deleted successfully",
+            "deactivated": "Coupon deactivated"
+        },
+        "confirmDelete": "Are you sure you want to deactivate this coupon?",
+        "noDiscounts": "No coupons available"
     },
     "sellers": {
         "commandCenter": "Partner Command Center",

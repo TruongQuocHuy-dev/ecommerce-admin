@@ -384,14 +384,21 @@
         "title": "Mã giảm giá",
         "subtitle": "Quản lý mã khuyến mãi và chương trình giảm giá",
         "addDiscount": "Tạo mã mới",
-        "searchPlaceholder": "Tìm mã...",
+        "searchPlaceholder": "Tìm kiếm mã hoặc tên...",
         "allTypes": "Tất cả loại",
         "allStatus": "Tất cả trạng thái",
+        "allScopes": "Tất cả phạm vi",
+        "scopeSystem": "Hệ thống",
+        "scopeShop": "Cửa hàng",
+        "sellerName": "Cửa hàng / Người bán",
+        "createdBy": "Người tạo",
+        "usageHistory": "Xem lịch sử dùng mã",
         "tableHeaders": {
             "code": "Mã",
             "name": "Tên",
             "type": "Loại",
             "value": "Giá trị",
+            "scope": "Phạm vi",
             "usage": "Lượt dùng",
             "validUntil": "Hạn dùng",
             "status": "Trạng thái",
@@ -422,7 +429,25 @@
             "usagePerUser": "Giới hạn mỗi người",
             "startDate": "Ngày bắt đầu",
             "endDate": "Ngày kết thúc",
-            "active": "Kích hoạt"
+            "active": "Kích hoạt",
+            "scope": "Phạm vi áp dụng",
+            "selectScope": "Chọn phạm vi",
+            "selectShop": "Chọn Cửa hàng / Người bán",
+            "shopLabel": "Cửa hàng áp dụng"
+        },
+        "usageModal": {
+            "title": "Lịch sử sử dụng của mã {{code}}",
+            "customer": "Khách hàng",
+            "order": "Mã đơn hàng",
+            "amount": "Số tiền giảm",
+            "date": "Ngày sử dụng",
+            "noUsage": "Mã giảm giá này chưa được sử dụng lần nào."
+        },
+        "stats": {
+            "total": "Tổng mã",
+            "system": "Mã hệ thống",
+            "seller": "Mã người bán",
+            "active": "Đang hoạt động"
         },
         "toast": {
             "created": "Tạo mã thành công",
