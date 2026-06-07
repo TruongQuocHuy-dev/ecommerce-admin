@@ -461,7 +461,57 @@
     "sellers": {
         "commandCenter": "Trung tâm quản lý đối tác",
         "title": "Người bán",
-        "subtitle": "Quản lý cửa hàng và người bán"
+        "subtitle": "Quản lý cửa hàng và người bán",
+        "stats": {
+            "total": "Tổng đối tác",
+            "pending": "Chờ phê duyệt",
+            "approved": "Đang hoạt động",
+            "suspended": "Đang tạm khóa",
+            "rejected": "Bị từ chối"
+        },
+        "tabs": {
+            "all": "Tất cả",
+            "pending": "Chờ duyệt",
+            "approved": "Đang hoạt động",
+            "suspended": "Tạm ngừng",
+            "rejected": "Bị từ chối"
+        },
+        "tableHeaders": {
+            "shop": "Cửa hàng / Đối tác",
+            "owner": "Chủ shop",
+            "contact": "Thông tin liên hệ",
+            "businessType": "Phân loại",
+            "metrics": "Hiệu suất",
+            "rating": "Đánh giá",
+            "status": "Trạng thái",
+            "actions": "Thao tác"
+        },
+        "businessTypes": {
+            "individual": "Cá nhân",
+            "company": "Doanh nghiệp"
+        },
+        "detailModal": {
+            "title": "Hồ sơ đối tác",
+            "shopInfo": "Thông tin cửa hàng",
+            "ownerInfo": "Thông tin chủ sở hữu",
+            "businessInfo": "Hồ sơ doanh nghiệp",
+            "address": "Địa chỉ liên hệ",
+            "metrics": "Thống kê hiệu suất",
+            "auditInfo": "Thông tin kiểm duyệt",
+            "rejectionReason": "Lý do từ chối",
+            "suspensionReason": "Lý do tạm khóa",
+            "approvedBy": "Người duyệt",
+            "rejectedBy": "Người từ chối",
+            "suspendedBy": "Người khóa",
+            "actionReasonPlaceholder": "Nhập lý do chi tiết..."
+        },
+        "toast": {
+            "approved": "Đã duyệt cửa hàng thành công",
+            "rejected": "Đã từ chối cửa hàng",
+            "suspended": "Đã tạm khóa cửa hàng thành công",
+            "reactivated": "Đã kích hoạt lại cửa hàng thành công",
+            "deleted": "Đã xóa cửa hàng thành công"
+        }
     },
     "reviews": {
         "commandCenter": "Trung tâm kiểm duyệt đánh giá",

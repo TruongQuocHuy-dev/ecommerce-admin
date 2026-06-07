@@ -419,7 +419,57 @@
     "sellers": {
         "commandCenter": "Partner Command Center",
         "title": "Sellers & Shops",
-        "subtitle": "Manage shops, seller approvals, and statuses."
+        "subtitle": "Manage shops, seller approvals, and statuses.",
+        "stats": {
+            "total": "Total Partners",
+            "pending": "Pending Approval",
+            "approved": "Active Shops",
+            "suspended": "Suspended Shops",
+            "rejected": "Rejected Shops"
+        },
+        "tabs": {
+            "all": "All",
+            "pending": "Pending",
+            "approved": "Active",
+            "suspended": "Suspended",
+            "rejected": "Rejected"
+        },
+        "tableHeaders": {
+            "shop": "Shop / Partner",
+            "owner": "Owner",
+            "contact": "Contact Info",
+            "businessType": "Type",
+            "metrics": "Metrics",
+            "rating": "Rating",
+            "status": "Status",
+            "actions": "Actions"
+        },
+        "businessTypes": {
+            "individual": "Individual",
+            "company": "Company"
+        },
+        "detailModal": {
+            "title": "Partner Profile Details",
+            "shopInfo": "Shop Profile",
+            "ownerInfo": "Owner Account Info",
+            "businessInfo": "Business Registration Details",
+            "address": "Registered Address",
+            "metrics": "Performance Metrics",
+            "auditInfo": "Audit Trail Information",
+            "rejectionReason": "Rejection Reason",
+            "suspensionReason": "Suspension Reason",
+            "approvedBy": "Approved By",
+            "rejectedBy": "Rejected By",
+            "suspendedBy": "Suspended By",
+            "actionReasonPlaceholder": "Enter detailed reason..."
+        },
+        "toast": {
+            "approved": "Shop approved successfully",
+            "rejected": "Shop rejected",
+            "suspended": "Shop suspended successfully",
+            "reactivated": "Shop reactivated successfully",
+            "deleted": "Shop deleted successfully"
+        }
     },
     "reports": {
         "commandCenter": "Analytics Command Center",
