@@ -479,7 +479,12 @@
     "settings": {
         "commandCenter": "System Config Center",
         "title": "System Settings",
-        "subtitle": "Manage general settings, social links, and system configurations"
+        "subtitle": "Manage general settings, shipping, security, and notifications",
+        "general": "General Settings",
+        "shipping": "Shipping Settings",
+        "banners": "Banners",
+        "security": "Security Settings",
+        "notifications": "Notification Settings"
     },
     "banners": {
         "commandCenter": "Banner Control Center",
