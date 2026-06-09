@@ -36,6 +36,12 @@
         "role": "Vai trò",
         "page": "Trang"
     },
+    "table": {
+        "product": "Sản phẩm",
+        "category": "Danh mục",
+        "sold": "Đã bán",
+        "revenue": "Doanh thu"
+    },
     "reports": {
         "commandCenter": "Trung tâm phân tích báo cáo",
         "title": "Báo cáo & Thống kê",
@@ -47,7 +53,37 @@
         "subtitle": "Tổng quan về hiệu quả kinh doanh của cửa hàng",
         "last7days": "7 ngày qua",
         "last30days": "30 ngày qua",
-        "thisMonth": "Tháng này"
+        "thisMonth": "Tháng này",
+        "averageOrderValue": "Giá trị đơn trung bình",
+        "cancellationRate": "Tỷ lệ hủy đơn",
+        "growth": "Tăng trưởng",
+        "vsLastMonth": "so với tháng trước",
+        "revenueDetails": "Chi tiết doanh thu",
+        "dailyRevenueChart": "Biểu đồ doanh thu theo ngày",
+        "dailyOrdersChart": "Biểu đồ đơn hàng theo ngày",
+        "revenueSummary": "Tóm tắt doanh thu",
+        "productPerformance": "Hiệu suất sản phẩm",
+        "topSellingProducts": "Sản phẩm bán chạy nhất",
+        "soldCount": "Đã bán",
+        "revenuePlaceholder": "Doanh thu",
+        "productCount": "Số lượng sản phẩm",
+        "ordersOverview": "Tổng quan đơn hàng",
+        "orderStatusDistribution": "Phân bố trạng thái đơn hàng",
+        "ordersTrend": "Xu hướng đơn hàng",
+        "startDate": "Ngày bắt đầu",
+        "endDate": "Ngày kết thúc",
+        "applyFilter": "Áp dụng",
+        "clearFilter": "Xóa bộ lọc",
+        "exportCSV": "Xuất CSV",
+        "noData": "Không có dữ liệu trong khoảng thời gian này",
+        "loading": "Đang tải dữ liệu...",
+        "revenueTab": "Doanh thu",
+        "productsTab": "Sản phẩm",
+        "ordersTab": "Đơn hàng",
+        "otherStatuses": "Trạng thái khác",
+        "deliveredOrders": "Đơn giao thành công",
+        "ratioOfTotal": "Chiếm {{percent}}% tổng đơn",
+        "totalCancelledText": "Tổng hủy: {{count}} đơn hàng"
     },
     "settings": {
         "commandCenter": "Trung tâm cấu hình hệ thống",
@@ -324,9 +360,10 @@
         "status": {
             "pending": "Chờ xử lý",
             "processing": "Đang xử lý",
-            "shipped": "Đã gửi",
+            "shipped": "Đang giao",
             "delivered": "Đã giao",
-            "cancelled": "Đã hủy"
+            "cancelled": "Đã hủy",
+            "returned": "Trả hàng"
         },
         "noOrders": "Không tìm thấy đơn hàng.",
         "viewDetails": "Xem chi tiết",
