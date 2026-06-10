@@ -21,7 +21,9 @@ import {
     AlertCircle,
     ShieldAlert,
     Settings,
-    Sparkles
+    Sparkles,
+    Download,
+    Calendar
 } from 'lucide-react'
 import {
     AreaChart,
@@ -239,11 +241,26 @@ const Dashboard = () => {
         }).filter(item => item.count > 0)
     }, [orderDistribution, stats])
 
+    // Formatter helpers for charts
+    const formatRevenueAxis = useCallback((value) => {
+        if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+        if (value >= 1000) return `${(value / 1000).toFixed(0)}k`;
+        return value;
+    }, []);
+
+    const formatRevenueTooltip = useCallback((value) => {
+        return [`${value.toLocaleString('vi-VN')} ₫`, 'Doanh thu'];
+    }, []);
+
+    const formatOrdersTooltip = useCallback((value) => {
+        return [`${value} đơn`, 'Số đơn hàng'];
+    }, []);
+
     // Export recent orders to CSV
     const exportRecentOrdersCSV = useCallback(() => {
         const rows = [
             ['Order ID', 'Customer', 'Amount', 'Status', 'Date']
-        ]
+        ];
         (recentOrders || []).forEach(o => {
             rows.push([o._id || '', o.user?.name || '', o.totalAmount || 0, o.status || '', o.createdAt || ''])
         })
@@ -281,7 +298,7 @@ const Dashboard = () => {
             </div>
 
             {/* Maintenance Warning */}
-            {maintenanceMode && (
+            {maintenanceMode ? (
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl flex items-center gap-3 animate-pulse">
                     <ShieldAlert className="w-6 h-6 text-red-600 flex-shrink-0" />
                     <div>
@@ -289,7 +306,7 @@ const Dashboard = () => {
                         <p className="text-xs text-red-700 mt-0.5">Người dùng bên ngoài không thể truy cập hoặc thanh toán vào thời điểm này.</p>
                     </div>
                 </div>
-            )}
+            ) : null}
 
             {/* Live Operations & Quick Control Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -508,7 +525,7 @@ const Dashboard = () => {
                             trend={stats.pendingShops > 0 ? `${stats.pendingShops} chờ duyệt` : '—'}
                             trendUp={false}
                             color="indigo"
-                            description={`${stats.pendingShops > 0 ? `${stats.pendingShops} chờ duyệt` : 'Tất cả đã duyệt'}`}
+                            description={stats.pendingShops > 0 ? `${stats.pendingShops} chờ duyệt` : 'Tất cả đã duyệt'}
                         />
 
                         <Card
@@ -526,7 +543,7 @@ const Dashboard = () => {
                             trend={stats.cancellationRate ? `${stats.cancellationRate}%` : '—'}
                             trendUp={false}
                             color="red"
-                            description={`Tỷ lệ hủy: ${stats.cancellationRate ? `${stats.cancellationRate}%` : '0%'}`}
+                            description={`Tỷ lệ hủy: ${stats.cancellationRate || 0}%`}
                         />
                     </>
                 )}
@@ -626,7 +643,7 @@ const Dashboard = () => {
             {/* Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Revenue Chart */}
-                {canViewRevenue && revenueChartData.length > 0 && (
+                {canViewRevenue && revenueChartData.length > 0 ? (
                     <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between" role="region" aria-labelledby="revenue-chart-title">
                         <div>
                             <h2 id="revenue-chart-title" className="text-lg font-bold text-slate-900 mb-4">Doanh Thu Hệ Thống</h2>
@@ -647,7 +664,7 @@ const Dashboard = () => {
                                             tickLine={false}
                                             tick={{ fill: '#64748b', fontSize: 10 }}
                                             width={55}
-                                            tickFormatter={(value) => value >= 1000000 ? `${(value / 1000000).toFixed(1)}M` : value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value}
+                                            tickFormatter={formatRevenueAxis}
                                         />
                                         <Tooltip
                                             contentStyle={{
@@ -661,7 +678,7 @@ const Dashboard = () => {
                                             }}
                                             itemStyle={{ color: '#e2e8f0', fontSize: '11px' }}
                                             labelStyle={{ color: '#94a3b8', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px' }}
-                                            formatter={(value) => [`${value.toLocaleString('vi-VN')} ₫`, 'Doanh thu']}
+                                            formatter={formatRevenueTooltip}
                                         />
                                         <Area
                                             type="monotone"
@@ -676,10 +693,10 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                )}
+                ) : null}
 
                 {/* Orders Trend Chart */}
-                {revenueChartData.length > 0 && (
+                {revenueChartData.length > 0 ? (
                     <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between" role="region" aria-labelledby="orders-trend-chart-title">
                         <div>
                             <h2 id="orders-trend-chart-title" className="text-lg font-bold text-slate-900 mb-4">Đơn Hàng Hệ Thống</h2>
@@ -714,7 +731,7 @@ const Dashboard = () => {
                                             }}
                                             itemStyle={{ color: '#e2e8f0', fontSize: '11px' }}
                                             labelStyle={{ color: '#94a3b8', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px' }}
-                                            formatter={(value) => [`${value} đơn`, 'Số đơn hàng']}
+                                            formatter={formatOrdersTooltip}
                                         />
                                         <Area
                                             type="monotone"
@@ -729,10 +746,10 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                )}
+                ) : null}
 
                 {/* Order Status Distribution */}
-                {orderDistribution.length > 0 && (
+                {orderDistribution.length > 0 ? (
                     <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between" role="region" aria-labelledby="order-dist-title">
                         <div>
                             <h2 id="order-dist-title" className="text-lg font-bold text-slate-900 mb-4">Phân Bố Đơn Hàng</h2>
@@ -794,7 +811,7 @@ const Dashboard = () => {
                             </div>
                         </div>
                     </div>
-                )}
+                ) : null}
             </div>
 
             {/* Bottom Section: Recent Orders, Top Products, Low Stock, Live Activity */}
@@ -832,9 +849,9 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             ))}
-                            {(!recentOrders || recentOrders.length === 0) && (
+                            {!recentOrders || recentOrders.length === 0 ? (
                                 <p className="text-sm text-slate-400 text-center py-4">Chưa có đơn hàng</p>
-                            )}
+                            ) : null}
                         </div>
                     </div>
                     <div className="mt-4 pt-3 border-t border-slate-100">
@@ -865,9 +882,9 @@ const Dashboard = () => {
                                     <TrendingUp className="w-4 h-4 text-green-500 flex-shrink-0" />
                                 </div>
                             ))}
-                            {(!topProductsData || topProductsData.length === 0) && (
+                            {!topProductsData || topProductsData.length === 0 ? (
                                 <p className="text-sm text-slate-400 text-center py-4">Chưa có dữ liệu</p>
-                            )}
+                            ) : null}
                         </div>
                     </div>
                     <div className="mt-4 pt-3 border-t border-slate-100 text-center">
@@ -905,12 +922,12 @@ const Dashboard = () => {
                                     </span>
                                 </div>
                             ))}
-                            {(!lowStockData || lowStockData.length === 0) && (
+                            {!lowStockData || lowStockData.length === 0 ? (
                                 <p className="text-sm text-green-600 text-center py-4 flex items-center justify-center gap-2">
                                     <CheckCircle className="w-4 h-4" />
                                     Tồn kho ổn định
                                 </p>
-                            )}
+                            ) : null}
                         </div>
                     </div>
                     <div className="mt-4 pt-3 border-t border-slate-100 text-center">

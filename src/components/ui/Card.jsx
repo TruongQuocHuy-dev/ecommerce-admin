@@ -9,6 +9,9 @@ const Card = ({ title, value, icon: Icon, trend, trendUp, description, className
         orange: 'from-amber-500 to-orange-500',
         red: 'from-red-500 to-pink-500',
         cyan: 'from-cyan-500 to-accent-500',
+        indigo: 'from-indigo-500 to-purple-500',
+        pink: 'from-pink-500 to-rose-500',
+        slate: 'from-slate-500 to-slate-700',
     }
 
     const iconBgClasses = {
@@ -18,6 +21,9 @@ const Card = ({ title, value, icon: Icon, trend, trendUp, description, className
         orange: 'bg-amber-50',
         red: 'bg-red-50',
         cyan: 'bg-cyan-50',
+        indigo: 'bg-indigo-50',
+        pink: 'bg-pink-50',
+        slate: 'bg-slate-100',
     }
 
     const iconTextClasses = {
@@ -27,6 +33,9 @@ const Card = ({ title, value, icon: Icon, trend, trendUp, description, className
         orange: 'text-amber-600',
         red: 'text-red-600',
         cyan: 'text-cyan-600',
+        indigo: 'text-indigo-600',
+        pink: 'text-pink-600',
+        slate: 'text-slate-600',
     }
 
     return (
@@ -53,14 +62,18 @@ const Card = ({ title, value, icon: Icon, trend, trendUp, description, className
                     )}>
                         <Icon className={clsx("w-6 h-6", iconTextClasses[color] || iconTextClasses.blue)} />
                     </div>
-                    {trend && (
+                    {trend && trend !== '—' && (
                         <div className={clsx(
-                            "flex items-center text-sm font-medium px-3 py-1 rounded-full",
-                            trendUp
-                                ? "text-emerald-700 bg-emerald-50 border border-emerald-200"
-                                : "text-red-700 bg-red-50 border border-red-200"
+                            "flex items-center text-xs font-semibold px-2.5 py-1 rounded-full border",
+                            trend.includes('chờ duyệt')
+                                ? "text-amber-700 bg-amber-50 border-amber-200"
+                                : trendUp
+                                    ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+                                    : "text-red-700 bg-red-50 border-red-200"
                         )}>
-                            {trendUp ? <ArrowUpRight className="w-4 h-4 mr-1" /> : <ArrowDownRight className="w-4 h-4 mr-1" />}
+                            {!trend.includes('chờ duyệt') && (
+                                trendUp ? <ArrowUpRight className="w-3.5 h-3.5 mr-1" /> : <ArrowDownRight className="w-3.5 h-3.5 mr-1" />
+                            )}
                             {trend}
                         </div>
                     )}
