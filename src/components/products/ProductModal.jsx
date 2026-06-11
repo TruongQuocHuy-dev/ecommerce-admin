@@ -11,6 +11,23 @@ import ProductSEO from './ProductSEO'
 import clsx from 'clsx'
 import { useTranslation } from '../../i18n/index.jsx'
 
+const findCategoryPath = (cats, targetId) => {
+    if (!targetId || !cats || cats.length === 0) return [];
+    for (const cat of cats) {
+        const catId = cat.id || cat._id;
+        if (catId === targetId) {
+            return [cat];
+        }
+        if (cat.children && cat.children.length > 0) {
+            const path = findCategoryPath(cat.children, targetId);
+            if (path.length > 0) {
+                return [cat, ...path];
+            }
+        }
+    }
+    return [];
+};
+
 const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
     const { t } = useTranslation()
     const [activeTab, setActiveTab] = useState('general')
@@ -61,19 +78,74 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
     const createProduct = useCreateProduct()
     const updateProduct = useUpdateProduct()
 
-    // Helper to flatten hierarchical categories for the dropdown
-    const flattenCategories = (cats, level = 0) => {
-        let flat = []
-        cats.forEach(cat => {
-            flat.push({ ...cat, level })
-            if (cat.children && cat.children.length > 0) {
-                flat = flat.concat(flattenCategories(cat.children, level + 1))
-            }
-        })
-        return flat
-    }
+    // Helper to find category path
+    const path = findCategoryPath(categories, formData.category);
 
-    const flatCategories = flattenCategories(categories)
+    const renderCategorySelectors = () => {
+        // We always render at least the level 1 (root) dropdown
+        const levelsToRender = [];
+        
+        // Level 1: Root categories
+        levelsToRender.push({
+            options: categories,
+            selectedId: path[0]?.id || path[0]?._id || '',
+            label: 'Danh mục chính'
+        });
+        
+        // Subsequent levels
+        for (let i = 0; i < path.length; i++) {
+            const currentCat = path[i];
+            if (currentCat && currentCat.children && currentCat.children.length > 0) {
+                levelsToRender.push({
+                    options: currentCat.children,
+                    selectedId: path[i + 1]?.id || path[i + 1]?._id || '',
+                    label: `Danh mục con của "${currentCat.name}"`
+                });
+            }
+        }
+        
+        return (
+            <div className="space-y-3">
+                {levelsToRender.map((level, index) => (
+                    <div key={index} className="flex-1">
+                        <label className="block text-xs font-semibold text-slate-500 mb-1">
+                            {index === 0 ? t('products.form.category') || 'Danh mục' : `➔ ${level.label}`}
+                        </label>
+                        <select
+                            required={index === 0}
+                            value={level.selectedId}
+                            onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === '') {
+                                    const parentCat = path[index - 1];
+                                    const parentId = parentCat ? (parentCat.id || parentCat._id) : '';
+                                    setFormData({ ...formData, category: parentId });
+                                } else {
+                                    setFormData({ ...formData, category: val });
+                                }
+                                if (validationErrors.category) {
+                                    setValidationErrors((prev) => ({ ...prev, category: undefined }));
+                                }
+                            }}
+                            className={clsx(
+                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all text-sm bg-slate-50/50 hover:bg-white text-gray-800",
+                                validationErrors.category && index === 0 ? 'border-red-400' : 'border-gray-300'
+                            )}
+                        >
+                            <option value="">
+                                {index === 0 ? '--- Chọn danh mục chính ---' : '--- Chọn danh mục con ---'}
+                            </option>
+                            {level.options.map((cat) => (
+                                <option key={cat.id || cat._id} value={cat.id || cat._id}>
+                                    {cat.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                ))}
+            </div>
+        );
+    };
 
     useEffect(() => {
         if (product && mode === 'edit') {
@@ -407,31 +479,8 @@ const ProductModal = ({ isOpen, onClose, product, mode = 'create' }) => {
                                         )}
                                     </div>
 
-                                    <div className="col-span-2">
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                            {t('products.form.category')} *
-                                        </label>
-                                        <select
-                                            required
-                                            value={formData.category}
-                                            onChange={(e) => {
-                                                setFormData({ ...formData, category: e.target.value })
-                                                if (validationErrors.category) {
-                                                    setValidationErrors((prev) => ({ ...prev, category: undefined }))
-                                                }
-                                            }}
-                                            className={clsx(
-                                                "w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 outline-none transition-all",
-                                                validationErrors.category ? 'border-red-400' : 'border-gray-300'
-                                            )}
-                                        >
-                                            <option value="">{t('products.form.selectCategory')}</option>
-                                            {flatCategories.map((cat) => (
-                                                <option key={cat.id} value={cat.id}>
-                                                    {'\u00A0'.repeat(cat.level * 2)}{cat.name}
-                                                </option>
-                                            ))}
-                                        </select>
+                                    <div className="col-span-2 space-y-1">
+                                        {renderCategorySelectors()}
                                         {validationErrors.category && (
                                             <p className="mt-1 text-xs text-red-600">{validationErrors.category}</p>
                                         )}
